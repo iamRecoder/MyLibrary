@@ -263,8 +263,85 @@ def arrayPairSum(self, nums: List[int]) -> int:
 => 앞서 살펴본 슬라이싱을 활용하면 놀랍게도 단 한줄로도 풀이가 가능하다.
 
 
+문제11. 자신을 제외한 배열의 곱
+배열을 입력받아 output[i]가 자신을 제외한 나머지 모든 요소의 곱셉 결과가 되도록 출력하라.
+주의. 나눗셈을 하지 않고 O(n)에 풀이하라.
+
+예제1)
+입력: [1,2,3,4]
+출력: [24,12,8,6]
+
+풀이1) 왼쪽 곱셉 결과에 오른쪽 값을 차례대로 곱셈
+class Solution:
+    def productExceptSelf(self, nums: List[int]) -> List[int]:
+        out = []
+        p = 1
+        # 왼쪽 곱셈
+        for i in range(0, len(nums)):
+            out.append(p)
+            p = p * nums[i]
+        p = 1
+        # 왼쪽 곱셈 결과에 오른쪽 값을 차례대로 곱셈
+        for i in range(len(nums) - 1, 0 - 1, -1):
+            out[i] = out[i] * p
+            p = p * nums[i]
+        return out
+=> 자기 자신을 제외하고 왼쪽의 곱셈 결과와 오른쪽의 곱셈 결과를 곱해야 한다.
+이처럼 변수 i가 오른쪽으로 이동하면서 해당 인덱스의 값을 곱해 나간 다음, 오른쪽에서 곱해서 넣는다.
+여기서 만약 별도의 그 변수에 우측 곱셈 결과를 넣으면 공간 복잡도는 O(n)이 된다.
+그러나 기존 out 변수를 재활용한다면 공간 복잡도 O(1)에 풀이가 가능하다.
+참고로 출력에 필요한 공간은 공간복잡도에 포함되지 않는다.
+이번에는 왼쪽의 곱셈 결과에 오른쪽 마지막 값부터 차례대로 곱해 나간다.
 
 
+문제12. 주식을 사고팔기 가장 좋은 시점
+한 번의 거래로 낼 수 있는 최대 이익을 산출하라.
+
+예제1)
+입력: [7,1,5,3,6,4]
+출력: 5
+
+풀이1) 브루트 포스로 계산
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        max_price = 0
+
+        for i, price in enumerate(prices):
+            for j in range(i, len(prices)):
+                max_price = max(prices[j] - price, max_price)
+
+        return max_price
+=> 가장 먼저 접근할 풀이법은 당연히 브루트 포스다. 처음부터 O(n^2)으로 사고팔고를 반복하면, 마지막에 최대 이익을 산출할 수 있을 것 같아.
+하지만 안타깝게도 이 풀이는 타임아웃으로 풀리지 않는다.
+
+풀이2) 저점과 현재 값과의 차이 계산
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        profit = 0
+        min_price = sys.maxsize
+
+        # 최소값과 최대값 계속 갱신
+        for price in prices:
+            min_price = min(min_price, price)
+            profit = max(profit, price - min_price)
+
+        return profit
+=> 입력값을 그래프로 그려서 시각화해보면 대략 어떤 식으로 풀어야 할지 직관이 생길 것이다.
+최댓값의 초기값은 -sys.maxsize, 최솟값의 초기값은 sys.maxsize로 지정한다. 만약 None으로 잡아두게 되면 비교 시 타입에러가 발생할 수 있기 떄문이다.
+그러나 이 문제에서는 입력값이 []인 경우, 자칫 -sys.maxsize가 그대로 리턴될 수 있기 때문에 profit을 0으로 설정한다.
+이후 최저점을 비교해 더 작을 경우 최솟값을 갱신하고, 현재 값과 최솟값과의 차이를 계산해 만약 더 클 경우 최댓값 profit을 게속 갱신하면서 반복한다.
+
+** 최댓값과 최솟값
+앞서 문제 풀이에는 다음과 같이 sys를 활용했다. 이 모듈을 사용하면 시스템이 지정할 수 있는 가장 높은 값, 낮은 값을 활용할 수 있다.
+    mx = -sys.maxsize
+    mn = sys.maxsize
+float()을 이용해 다음과 같이 무한대 값을 지정하는 방법도 있다.
+가장 좋지 않은 방법은 임의의 값을 지정하는 것이다.
+파이썬의 숫자형은 임의 정밀도(Arbitrary-Precision)를 지우너하며 사실상 무한대의 값을 지정할 수 있다.
+아무리 큰 수라 할지라도 얼마든지 더 큰 수가 지정될 수 있으므로, 이런 식으로 최솟값 변수에 임의의 값을 초깃값으로 지정하는 것은 지양해야 한다.
+
+
+Q. 194p 왜 굳이 range문에서 0-1로 표기했을까
 
 
 
