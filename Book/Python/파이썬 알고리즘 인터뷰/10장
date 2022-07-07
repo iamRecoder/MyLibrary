@@ -1,0 +1,190 @@
+10장 데크, 우선순위 큐
+
+이번 10장에서는 스택과 큐의 연산을 모두 갖고 있는 복합 자료형인 데크와 추출 순서가 일정하게 정해져 있지 않은 우선순위 큐에 대해 살펴본다.
+
+* 데크
+앞써 원형 큐 구현에서 Rear()는 큐에 정의되어 있지 않은 연산이라는 점을 얘기한 바가 있다.
+Rear() 연산은 데크에 존재하는 연산으로, 데크의 정의는 다음과 같다.
+
+    "데크(Deque)는 더블 엔디드 큐(Double-Ended Queue)의 줄임말로, 글자 그대로 양쪽 끝을 모두 추출할 수 있는, 큐를 일반화한 형태의 추상 자료형(ADT)이다."
+
+데크는 양쪽에서 삭제와 삽입을 모두 처리할 수 있으며, 스택과 큐의 특징을 모두 갖고 있다.
+이 추상 자료형(ADT)의 구현은 배열이나 연결 리스트 모두 가능하디만, 특별히 다음과 같이 이중 연결 리스트로 구현하는 편이 가장 잘 어울린다.
+
+이중 연결 리스트로 구현하게 되면, 양쪽으로 head와 tail이라는 이름의 두 포인터를 갖고 있다가 새로운 아이템이 추가될 때마다 앞쪽 또는 뒤쪽으로 연결시켜 주기만 하면 된다. 당연히 연결 후에는 포인터를 이동하면 된다.
+파이썬은 데크 자료형을 다음과 같이 collections 모듈에서 deque라는 이름으로 지원한다.
+이 collections.deque는 마찬가지로 이중 연결 리스트로 구현되어 있다.
+CPython에서는 고정 길이 하위 배열(Subarray)을 지닌 이중 연결 리스트로 구현되어 있으며, 내부 구현을 살펴보면 마찬가지로 다음과 같이 구조체인 dequeobject가 block 노드의 이중 연결 리스트로 구현되어 있는 것을 확인할 수 있다.
+또한 dequeobject는 왼쪽, 오른쪽 인덱스 정보와 최대 길이 등 여러가지 부가 정보를 함께 보관하고 있는 풍부한 구조체임을 확인할 수 있다.
+
+문제26. 원형 데크 디자인
+다음 연산자를 제공하는 원형 데크를 디자인하라.
+- MyCircularDeque(k): 데크 사이즈를 k로 지정하는 생성자다.
+- insertFront(): 데크 처음에 아이템을 추가하고 성공할 경우 true를 리턴한다.
+- insertLast(): 데크 마지막에 아이템을 추가하고 성공할 경우 true를 리턴한다.
+- DeleteFront(): 데크 처음에 아이템을 삭제하고 성공할 경우 true를 리턴한다.
+- DeleteLast(): 데크 마지막에 아이템을 삭제하고 성공할 경우 true를 리턴한다.
+- getFront(): 데크의 첫 번째 아이템을 가져온다. 데크가 비어 있다면 -1을 리턴한다.
+- getRear(): 데크의 마지막 아이템을 가져온다. 데크가 비어 있다면 -1을 리턴한다.
+- isEmpty(): 데크가 비어 있는지 여부를 판별한다.
+- isFull(): 데크가 가득 차 있는지 여부를 판별한다.
+
+풀이1) 이중 연결 리스트를 이용한 데크 구현
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+
+class MyCircularDeque:
+    def __init__(self, k: int):
+        self.head, self.tail = ListNode(None), ListNode(None)
+        self.k, self.len = k, 0
+        self.head.right, self.tail.left = self.tail, self.head
+
+    # 이중 연결 리스트에 신규 노드 삽입
+    def _add(self, node: ListNode, new: ListNode):
+        n = node.right
+        node.right = new
+        new.left, new.right = node, n
+        n.left = new
+
+    def _del(self, node: ListNode):
+        n = node.right.right
+        node.right = n
+        n.left = node
+
+    def insertFront(self, value: int) -> bool:
+        if self.len == self.k:
+            return False
+        self.len += 1
+        self._add(self.head, ListNode(value))
+        return True
+
+    def insertLast(self, value: int) -> bool:
+        if self.len == self.k:
+            return False
+        self.len += 1
+        self._add(self.tail.left, ListNode(value))
+        return True
+
+    def deleteFront(self) -> bool:
+        if self.len == 0:
+            return False
+        self.len -= 1
+        self._del(self.head)
+        return True
+
+    def deleteLast(self) -> bool:
+        if self.len == 0:
+            return False
+        self.len -= 1
+        self._del(self.tail.left.left)
+        return True
+
+    def getFront(self) -> int:
+        return self.head.right.val if self.len else -1
+
+    def getRear(self) -> int:
+        return self.tail.left.val if self.len else -1
+
+    def isEmpty(self) -> bool:
+        return self.len == 0
+
+    def isFull(self) -> bool:
+        return self.len == self.k
+=> 앞의 25번 문제에서 원형 큐를 배열로 직접 구현해본 바가 있다.
+이번에는 실제 파이썬의 데크 구현체이기도 한 이중 연결 리스트로 구현해보자. 또한 이 데크 구현 문제의 경우 원형 큐 구현 문제와 달리, 맨 앞에 노드를 추가하는 insertFront() 연산도 있다.
+일반적인 배열로는 맨 앞에 요소를 추가하는 작업은 시간 복잡도가 O(n)이기 때문에 구현이 쉽지 않다.
+그러나 연결 리스트는 맨 앞에 노드를 추가하는 작업이 그리 어렵지 않다.
+
+그런데 사실 원형 데크를 이중 연결 리스트로 구현하게 되면 원형의 이점을 전혀 살릴 수 없게 된다.
+이 문제는 데크를 소개하면서 이중 연결 리스트로 구현이 가능하다는 것을 보여주기 위한 구현일 뿐, 실제로 원형의 이점을 살리기 위해서라면 원래 이 문제는 연결 리스트가 아닌 배열로 풀이해야 한다.
+
+원형으로 구현하는 이유는 뒤쪽으로 요소를 채우다가 공간이 다 차게되면 tail과 head를 연결해 앞쪽의 빈 공간을 활용하려는 의도인데, 연결 리스트는 애초에 빈 공간이라는 개념이 존재하지 않기 때문에 원형은 아무런 의미가 없다.
+또한 데크의 연산은 맨 처음과 맨 끝의 값을 추출할 뿐이며 맨 끝의 다음 값을 추출하는지 등의 연산은 존재하지 않기 때문에, 서로 연결되어 있을 필요 또한 없다.
+
+
+* 우선순위 큐
+
+우선순위 큐는 큐 또는 스택과 같은 추상 자료형과 유사하지만 추가로 각 요소의 '우선순위'와 연관되어 있다.
+
+스택은 가장 나중에 삽입된 요소를 먼저 추출하고, 큐는 가장 먼저 삽입된 요소를 먼저 추출한다.
+그러나 이와 달리 우선순위 큐는 어떠한 특정 조건에 따라 우선순위가 가장 높은 요소가 추출되는 자료형이다.
+
+이는 정렬 알고리즘을 사용하면 우선순위 큐를 만들 수 있다는 의미이기도 하다.
+우선순위 큐는 다양한 분야에서 활용되며 힙 자료구조와도 관련이 깊다.
+
+문제27. k개 정렬 리스트 병합
+k개의 정렬된 리스트를 1개의 정렬된 리스트로 병합하라.
+
+입력:
+[
+    1->4->5,
+    1->3->4,
+    2->6
+]
+출력: 1->1->2->3->4->4->5->6
+
+풀이1) 우선순위 큐를 이용한 리스트 병합
+import heapq
+from typing import List
+
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+
+class Solution:
+    def mergeKLists(self, lists: List[ListNode]) -> ListNode:
+        root = result = ListNode(None)
+        heap = []
+
+        # 각 연결 리스트의 루트를 힙에 저장
+        for i in range(len(lists)):
+            if lists[i]:
+                heapq.heappush(heap, (lists[i].val, i, lists[i]))
+
+        # 힙 추출 이후 다음 노드는 다시 저장
+        while heap:
+            node = heapq.heappop(heap)
+            idx = node[1]
+            result.next = node[2]
+
+            result = result.next
+            if result.next:
+                heapq.heappush(heap, (result.next.val, idx, result.next))
+
+        return root.next
+=> 우선순위 큐를 사용하면 매우 쉽게 풀이 가능하다.
+앞서 우선순위 큐를 설명할 때 힙과 관련이 깊다고 했다. 특히 파이썬에서는 대부분의 우선순위 큐 풀이에 거의 항상 heapq 모듈을 사용하므로 잘 파악해두자.
+왜 PriorityQueue 모듈을 사용하지 않고 heapq를 사용하는지는 277 페이지에서 다시 설명한다.
+
+파이썬의 heapq 모듈은 최소 힙을 지원하며, 따라서 lists.val이 작은 순서대로 pop()할 수 있다.
+그런데 이렇게 저장하면 에러 메시지가 발생한다. 이 에러메시지는 '중복된 값을 넣을 수 없다'라는 뜻이다.
+
+* PriorityQueue vs heapq
+파이썬에서 우선순위 큐는 queue 모듈의 PriorityQueue 클래스를 이용해 사용할 수 있다.
+PriorityQueue라는 이름 또한 뜻을 그대로 나타내므로 직관적이라 좋아 보인다.
+그러나 앞서 설명과 같이 우선순위 큐는 힙을 사용해 주로 구현하며, 파이썬의 PriorityQueue조차 내부적으로는 heapq를 사용하도록 구현되어 있다.
+PriorityQueue의 _get()과 _put()은 모두 heapq 모듈의 heappop()과 heappush()를 그대로 이용하므로 사실상 둘은 동일하다.
+그렇다면 차이점은 무엇일까? 차이점은 여기에 스레드 세이프(Thread-Safe, 멀티 스레드에도 안전한 프로그래밍 개념. 만약 스레드 세이프하지 않은 경우 1번 스레드의 값이 2번 스레드에서 변경될 수 있어 문제가 발생한다.) 클래스라는 점이며 heapq 모듈은 스레드 세이프를 보장하지 않는다.
+
+파이썬은 GIL의 특성상 멀티 스레딩이 거의 의미가 없기 때문에 대부분 멀티 프로세싱으로 활용한다는 점을 생각해보면, PriorityQueue 모듈의 멀티 스레딩 지원은 사실 큰 의미는 없다.
+또한 스레드 세이프를 보장한다는 얘기는 내부적으로 락킹(Locking)을 제공한다는 의미이므로 락킹 오버헤드가 발생해 성능에 영향을 끼친다.
+따라서 굳이 멀티 스레드로 구현할 게 아니라면 PriorityQueue 모듈은 사용할 필요가 없다
+
+* 파이썬 전역 인터프리터 락(GIL)
+'파이썬은 왜 느린가?'를 얘기할 때 가장 자주 듣게 되는 얘기가 전역 인터프리터 락(Global Interpreter Lock, 이하 GIL)이 아닐까 싶다.
+파이썬 최초의 공식 구현체인 CPython은 개발 초기에 번거로운 동시성 관리를 편하게 하고 스레드 세이프하지 않은 CPython의 메모리 관리를 쉽게 하기 위해 GIL로 파이선 객체에 대한 접근을 제한하는 형태로 설계했다.
+GIL은 전역 인터프리터 락(Global Interpreter Lock)의 약어로서, 하나의 스레드가 자원을 독점하는 형태로 실행된다.
+CPython 개발이 시작되던 시기인 1994년에는 CPU가 하나여서 충분히 그런 선택을 할 만했고,GIL 디자인에는 아무런 문제가 없었다.
+하지만 지금처럼 멀티 코어가 당연한 세상에서, 하나의 스레드가 자원을 독점하는 형태로 실행되는 제약은 매우 치명적이다.
+여러 차례 GIL을 걷어내려는 시도가 있어 왔지만 이러한 제약을 극복하기가 쉽지 않다. 지금까지도 GIL은 파이썬의 주요 특징으로 남아 있다.
+
+
+
