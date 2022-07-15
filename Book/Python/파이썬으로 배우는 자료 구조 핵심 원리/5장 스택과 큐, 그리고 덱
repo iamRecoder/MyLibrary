@@ -1,0 +1,216 @@
+5장 스택과 큐, 그리고 덱
+
+스택과 큐의 쓰임새는 많다. OS 내부의 많은 시스템이 스택과 큐를 기반으로 하며, 그래프와 트리 순회도 결국에는 스택과 큐로 하게 된다.
+6장의 깊이 우선 탐색(DFS)는 스택을 이용하는 순회이며, 너비우선 탐색(BFS)는 큐를 기반으로 한다.
+
+
+** 스택: 데이터를 차곡 차곡 쌓는다. LIFO(Last In First Out)
+파이썬의 자료구조에는 스택이라는 모듈을 별도로 지원하지 않는다.
+큐는 모듈을 지원하지만 스택은 지원하지 않는 이유는 리스트를 이용해서 스택을 간단하게 사용할 수 있기 때문이다.
+ADT의 push() 대신 리스트의 append()를, ADT의 pop() 대신 리스트의 pop()을 사용하라고 한다.
+리스트의 append()와 pop()은 O(1)로 매우 합리적이다.
+
+
+<파이썬으로 스택의 ADT 작성해보기>
+1. empty() -> Boolean
+: 스택이 비어 있으면 TRUE, 아니면 FALSE 반환
+
+2. push(data)
+: data를 스택의 맨 위에 삽입
+
+3. pop() -> element
+: 스택의 맨 위에 있는 데이터를 삭제하며 반환
+
+4. peek() -> element
+: 스택의 맨 위에 있는 데이터를 반환만 함
+
+코드 5.1 stack.py
+class Stack:
+def __init__(self):
+    self.container = list()
+
+def empty(self):
+    if not self.container:
+        return True
+    else:
+        return False
+
+def push(self, data):
+    self.container.append(data)
+
+def pop(self):
+    if self.empty():
+        return None
+    return self.container.pop()
+
+def peek(self):
+    if self.empty():
+        return None
+    return self.container[-1]
+
+
+
+** 큐: 데이터로 줄 세우기. FIFO(First In First Out)
+큐의 첫 데이터는 front가 가리키고 있으며, 큐의 마지막 데이터는 rear가 가리키고 있다.
+큐의 쓰임새는 다양한데, 대표적으로 OS의 태스크 큐를 이용한 스케줄링이 있다.
+
+
+<파이썬으로 큐의 ADT 작성해보기>
+1. is_empty() -> Boolean
+: 큐가 비어 있으면 TRUE, 아니면 FALSE 반환
+
+2. is_full() -> Boolean
+: 큐가 가득 찼으면 TRUE, 아니면 FALSE 반환
+
+3. enqueue(data)
+: 큐의 맨 뒤에 데이터 삽입
+
+4. dequeue() -> element
+: 큐의 맨 처음 데이터를 삭제하면서 반환
+
+5. peek() -> element
+: 큐의 맨 처음 데이터를 삭제하지 않고 반환만 함
+
+코드 5-2. queue.py
+class Queue:
+    def __init__(self):
+        self.container = list()
+
+    def empty(self):
+        if not self.container:
+            return True
+        else:
+            return False
+
+    def enqueue(self, data):
+        self.container.append(data)
+
+    def dequeue(self):
+        # 동적 배열의 맨 처음 데이터를 삭제하므로 빅오는 O(n)
+        # 좀 더 효율적으로 구현할 수는 없을까?
+        return self.container.pop(0)
+
+    def peek(self):
+        return self.container[0]
+=> 파이썬의 동적 배열인 리스트를 이용해서 큐를 구현했다. 그런데 스택에서 push와 pop 연산은 동적 배열의 맨 마지막에서 일어나므로 O(1)인 반면, 큐에서 enqueue() 연산은 rear에 데이터를 추가하므로 스택과 같은 O(1)이지만
+dequeue 연산은 동적 배열의 첫 번째 데이터를 삭제한 후 이후 모든 데이터를 한 번씩 옮겨야 하므로 O(n)이 된다.
+
+그렇다면 동적 배열의 장점을 살린 큐는 없을까?
+이에 대한 해답은 원형 큐이다.
+
+
+
+* 큐 구현2: 원형 큐로 구현하기
+원형 큐란 선형으로 이어져 있는 동적 배열을 마치 원형처럼 사용하는 방법이다.
+원형 큐는 데이터를 모두 이동시키지 않고 front를 뒤로 한 번만 이동시키면 되기 때문에, dequeue 연산마다 모든 데이터를 한 번씩 이동시키던 기존의 문제점을 해결한다.
+하지만 이 경우, 매번 dequeue 연산을 할 때마다 동적 배열의 앞 부분이 하나씩 비게 되기 때문에 enqueue 연산이 계속되어 rear가 동적 배열의 맨 마지막에 도달 했을 때 앞부분에 데이터를 저장할 충분한 공간이 있음에도 큐가 가득 찼다고 판단하게 된다.
+이 문제점은 선형적인 동적 배열을 원형으로 이어 붙이면 해결 가능하다. 논리적으로 이렇게 구성하면 rear가 동적 배열의 맨 마지막에 도달했을 때는 동적 배열의 맨 처음을 가리키게 하여 빈 공간에 데이터를 추가하면 되는 것이다.
+
+원형 큐를 구현하는 한 가지 팁은 원형 큐가 비어 있을 떄와 가득 찼을 때를 구분하기 위해 rear를 실제 데이터의 마지막 다음을 가리키게 하는 것이다.
+이렇게 하면 원형 큐가 비어 있을 떄는 front가 rear와 같아지고, 가득 찼을 때는 rear+1이 front와 같아진다.
+또 front나 rear가 동적 배열의 맨 마지막에 도달했을 때 맨 처음으로 이동시켜 줄 편의 메서드를 하나 두면 훨씬 쉽게 구현 가능하다.
+
+
+
+코드 5-3 CQueue.py
+class CQueue:
+    MAXSIZE = 10    # 원형 큐가 잘 동작하는지 확인하고자 동적 배열의 크기를 작게 잡았습니다.
+    def __init__(self):
+        self.container = [None for _ in range(CQueue.MAXSIZE)]
+        self.front = 0
+        self.rear = 0
+
+    def is_empty(self):
+        if self.front == self.rear:
+            return True
+        return False
+
+    def __step_forward(self, x):
+        x += 1
+        if x >= CQueue.MAXSIZE:     # 동적 배열을 벗어난다면 동적 배열의 맨 처음으로 이동시킨다.
+            x = 0
+        return X
+
+    def is-full(self):
+        next = self.__step_forward(self, rear)  # 이때 바로 rear에 1을 더한 후 front와 비교해서는 안된다. 먼저 rear를 __step_forward() 메서드로 이동시킨 후 이를 front와 비교해야 한다. (만약 지정한 범위를 벗어나면 0이 리턴될 수 있게)
+        if next == self.front:
+            return True
+        return False
+
+    def enqueue(self, data):
+        if self.is_full():
+            raise Exception("The queue is full")
+        self.container[self.rear] = data
+        self.rear = self.__step_forward(self.rear)
+
+    def dequeue(self):
+        if self.is_empty():
+            raise Exception("The queue is empty")
+        ret = self.container[self.front]
+        self.front = self.__step_forward(self.front)
+        return ret
+
+
+    def peek(self):
+        if self.is_empty():
+            raise Exception("The queue is empty")
+        return self.container[self.front]
+
+
+
+** 덱: 스택으로도 큐로도 사용할 수 있는 덱
+덱(deque)은 double-ended queue의 약어로 front와 rear에서 입출력이 모두 가능하다.
+
+
+<파이썬으로 덱의 ADT 작성해보기>
+1. is_empty() -> Boolean
+: 덱이 비어 있으면 True, 아니면 False 반환
+
+2. is_full() -> Boolean
+: 덱이 가득 찼으면 True, 아니면 False 반환
+
+3. insertFront(data)
+: 덱의 맨 앞에서 데이터 삽입
+
+4. insertRear(data)
+: 덱의 맨 뒤에 데이터 삽입
+
+5. popFront() -> element
+: 덱의 맨 처음 데이터를 삭제하면서 반환
+
+6. popRear() -> element
+: 덱의 맨 마지막 데이터를 삭제하면서 반환
+
+7. peekFront() -> element
+: 덱의 맨 처음 데이터를 삭제하지 않고 반환만 함
+
+8. peekRear() -> element
+: 덱의 맨 마지막 데이터를 삭제하지 않고 반환만 함
+
+코드 5-12. deque.py 파이썬이 제공하는 dequeue 이용해보기
+from collections import deque
+
+print('*' * 20 + 'STACK ' + '*' * 20)
+stack = deque()
+for i in range(1,6):
+    stack.append(i)
+    print(stack)
+
+for i in range(5):
+    print(stack.pop())
+
+print('*' * 20 + 'QUEUE ' + '*' * 20)
+deque = deque()
+for i in range(1,6):
+    queue.append(i)
+    print(queue)
+
+for i in range(5):
+    print(queue.popleft())
+=> 파이썬 공식 문서에 따르면 덱은 "인덱스로 양 끝에 접근할 때는 빅오가 O(1)이지만 중간에 있는 데이터에 접근하려면 조금 느려서 빅오가 O(n)이다."라고 쓰여 있다.
+동적 배열의 인덱싱은 O(1)이고 연결 리스트에서 데이터에 접근할 때는 모든 노드를 순회해야 하므로 빅오가 O(n)인 것을 지난 장에서 공부했다.
+따라서, 파이썬의 덱은 이중 연결 리스트를 이용해 구현했음을 유추할 수 있다.
+
+
+
+
