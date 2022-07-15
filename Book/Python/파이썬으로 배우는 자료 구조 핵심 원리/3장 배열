@@ -17,10 +17,6 @@
 
 2. Array.add_last(element)
 : 리스트의 마지막에 원소 추가
->>>li.append(5)
-
-3. Array.insert(index, element)
-: 리스트의 index 위치에 element 원소 삽입
 >>>li.insert(1,4)
 
 4. Array[index] -> element
