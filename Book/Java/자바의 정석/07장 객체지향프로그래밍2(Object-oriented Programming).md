@@ -122,6 +122,7 @@ java.lang 패키지는 매우 빈번히 사용되는 중요한 클래스들이 �
 ### static import문  
 import문을 사용하면 클래스의 패키지명을 생략할 수 있는 것과 같이 static import문을 사용하면 static 멤버를 호출할 때 클래스 이름을 생략할 수 있다.  
 
+
 <br>  
 
 ## 제어자(modifier)  
