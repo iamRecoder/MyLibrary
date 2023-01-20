@@ -76,7 +76,7 @@ char c = ' ';   // 공백으로 초기화
 이는 자주 사용되는 String 클래스의 생성자와 메서드이다.  
 - String(String s): 주어진 문자열을 갖는 String 인스턴스를 생성한다.
 - String(char[] value): 주어진 문자열을 갖는 String 인스턴스를 생성한다.
-- String(StringBuffer buf): StringBuffer인스턴스가 갖고 있는 무자열과 같은 내용의 String 인스턴스를 생성한다.  
+- String(StringBuffer buf): StringBuffer인스턴스가 갖고 있는 문자열과 같은 내용의 String 인스턴스를 생성한다.  
 - char charAt(int index): 지정된 위치에 있는 문자를 알려준다. index는 0부터 시작
 - int compareTo(String str): 문자열과 사전순서로 비교한다. 같으면 0을, 사전순으로 이전이면 음수(-1)를, 이후면 양수(1)를 반환한다.
 - String concat(String str): 문자열(str)을 뒤에 덧붙인다.
@@ -93,6 +93,16 @@ char c = ' ';   // 공백으로 초기화
 - String replace(char old, char new): 문자열 중 old를 모두 새로운 문자 new로 바꾼 문자열을 반환한다.
 - String replace(CharSequence old, CharSequence new): 문자열 중 old를 모두 새로운 문자열 new로 바꾼 문자열을 반환한다.
 - String replaceAll(String regex, String replacement): 문자열 중에서 지정된 문자열(regex)와 일치하는 것을 새로운 문자열(replacement)로 모두 변경한다.
+  - replaceAll()은 첫번째 인자값으로 정규식을 받는다. 정규식을 이용해서 불특정 문자열을 변환할 수 있다.
+    ```java
+    String str = "aaabbbccccabcddddabcdeeee";
+    String result1 = str.replace("abc", "왕");
+    String result2 = str.replaceAll("[abc]", "왕");
+
+    System.out.println("replace result->"+ result1);        // replace result->aaabbbcccc왕dddd왕deeee
+    System.out.println("replaceAll result->"+ result2);     // replaceAll result->왕왕왕왕왕왕왕왕왕왕왕왕왕dddd왕왕왕deeee
+    ```
+    [예제 출처 - https://djusti.tistory.com/8](https://djusti.tistory.com/8)
 - String replaceFirst(String regex, String replacement): 문자열 중에서 지정된 문자열(regex)와 일치하는 것 중, 첫 번째 것만 새로운 문자열(replacement)로 변경한다.
 - String[] split(String regex): 문자열을 지정된 분리자(regex)로 나누어 문자열 배열에 담아 반환한다.
 - String[] split(String regex, int limit): 문자열을 지정된 분리자(regex)로 나누어 문자열배열에 담아 반환한다. 단, 문자열 전체를 지정된 수(limit)로 자른다.
@@ -109,4 +119,146 @@ char c = ' ';   // 공백으로 초기화
     - static String valueOf(int i)
     - static String valueOf(long l)
     - static String valueOf(float f)
-    - static String valueOf(double d)
+    - static String valueOf(double d)  
+
+
+### join()과 StringJoiner  
+
+join()은 여러 문자열 사이에 구분자를 넣어서 결합한다.  
+java.util.StringJoiner 클래스를 사용해서 문자열을 결합할 수도 있는데, 사용하는 방법은 간단하다.  
+- String.join(’구분자’,붙이고 싶은 문자열): 여러 문자열 사이에 구분자를 넣어서 결합한다.
+- java.util.StringJoiner 클래스: new StringJoiner(delimiter,prefix,suffix)와 같은 형식으로 지정 가능하다.
+```java
+String animals = "dog,cat,bear";
+String[] arr = animals.split(",");
+
+System.out.println(String.join("-", arr));  // dog-cat-bear
+
+StringJoiner sj = new StringJoiner("/","[","]");
+for(String s: arr){
+    sj.add(s);
+}
+
+System.out.println(sj.toString);    // [dog/cat/bear]
+```
+<br>  
+
+### String.format()
+format()은 형식화된 문자열을 만들어내는 간단한 방법이다.
+String.format(”서식 문자열”, 인자…) 형식으로 printf()하고 사용법이 완전히 똑같다.  
+
+### 기본형 값을 String으로 변환  
+기본형을 문자열로 변경하는 가장 간단한 방법은 빈 문자열""을 더해주는 것이다.  
+이 외에도 valueOf()를 사용하는 방법도 있다. 
+성능은 valueOf()가 더 좋다.  
+
+### String을 기본형으로 변환  
+String을 기본형으로 변환하는 방법은 valueOf()를 쓰거나 parseInt()를 사용하면 된다.  
+원래 valueOf()의 반환타입은 int가 아니라 Integer인데, 곧 배울 오토박싱(auto-Boxing)에 의해 Integer가 int로 자동 변환된다.  
+메서드의 이름을 통일하기 위해 valueOf()가 나중에 추가되었다. valueOf(String s)는 내부에서 그저 parseInt(String s)를 호출할 뿐이므로, 두 메서드는 반환 타입만 다른 같은 메서드이다.  
+```text
+parseInt(String s)의 리턴타입은 Primitive Type이다. valueOf(String s)의 리턴타입은 Wrapper class이다. 
+```
+
+parseInt()나 parseFloat()과 같은 메서드는 문자열에 공백 또는 문자가 포함되어 있는 경우 변환 시 예외(NumberFormatException)가 발생할 수 있으므로 주의해야 한다.  
+그래서 문자열 양끝의 공백을 제거해주는 trim()을 습관적으로 같이 사용하기도 한다.  
+```java
+int val = Integer.parseInt(" 123 ".trim());     // 문자열 양 끝의 공백을 제거 후 변환
+```
+그러나 부호를 의미하는 '+'나 소수점을 의미하는 '.'와 float형 값을 의미하는 f와 같은 자료형 접미사는 허용된다. 단. 자료형에 알맞은 변환을 사용하는 경우에만 허용된다.  
+<br>
+
+## StringBuffer 클래스와 StringBuilder 클래스  
+String 클래스는 인스턴스를 생성할 때 지정된 문자열을 변경할 수 없지만 StringBuffer클래스는 변경이 가능하다.  
+내부적으로 문자열 편집이 가능한 버퍼(buffer)를 가지고 있으며, StringBuffer 인스턴스를 생성할 때 그 크기를 지정할 수 있다.  
+이 때, 편집할 문자열의 길이를 고려하여 버퍼의 길이를 충분히 잡아주는 것이 좋다. 
+편집 중인 문자열이 버퍼의 길이를 넘어서게 되면 버퍼의 길이를 늘려주는 작업이 추가로 수행되어야하기 때문에 작업효율이 떨어진다.  
+
+StringBuffer클래스는 String 클래스와 유사한 점이 많다. 
+StringBuffer 클래스는 클래스와 같이 문자열을 저장하기 위한 char형 배열의 참조변수 value를 인스턴스 변수로 선언해 놓고 있다.  
+
+### StringBuffer의 생성자  
+StringBuffer 클래스의 인스턴스를 생성할 때, 적절한 길이의 char형 배열이 생성되고, 이 배열은 문자열을 저장하고 편집하기 위한 공간(buffer)으로 사용된다.  
+```java
+// StringBuffer의 생성자  
+public StringBuffer(int length){
+    value = new char[length];
+    shared = false;
+}
+public StringBuffer() { 
+    this(16);
+}
+public StringBuffer(String str) {
+    this(str.length() + 16);
+    append(str);
+}
+```
+버퍼의 크기를 지정하지 않을 경우, 버퍼의 크기는 16이 된다. 
+또한 버퍼의 크기를 지정할 경우, 지정한 문자열의 길이보다 16이 더 크게 버퍼를 생성한다.  
+
+StringBuffer인스턴스로 문자열을 다루는 작업을 할 때, 버퍼의 크기가 작업하려는 문자열의 길이보다 작을 때는 내부적으로 버퍼의 크기를 증가시키는 작업이 수행된다.  
+배열의 길이는 변경될 수 없으므로 새로운 길이의 배열을 생성한 후에 이전 배열의 값을 복사해야 한다.  
+```java
+...
+// 새로운 길이(newCapacity)의 배열을 생성한다. newCapacity는 정수값이다.
+char[] newValue = new char[newCapacity];
+
+// 배열 value의 내용을 배열 newValue로 복사한다.  
+System.arraycopy(value, 0, newValue, 0, count);     // count는 문자열의 길이
+value = newValue;   // 새로 생성된 배열의 주소를 참조변수 value에 저장.
+```
+이렇게 함으로써 StringBuffer클래스의 인스턴스 변수 value는 길이가 증가된 새로운 배열을 참조하게 된다.  
+
+### StringBuffer의 변경  
+String과 달리 StringBuffer는 내용을 변경할 수 있다.  
+append()는 반환타입이 StringBuffer이기 때문에 자신의 주소를 반환한다. 
+그래서 append(String s)메서드가 수행되면, StringBuffer에 새로운 문자열이 추가되고 StringBuffer 자신의 주소를 반환한다.  
+이처럼 자신의 주소를 반환하기 때문에 append(String s)를 여러번 호출할 수 있다.  
+```java
+StringBuffer sb = new StringBuffer("abc");
+sb.append("123").append("ZZ");
+```
+<br>
+
+### StringBuffer의 비교  
+StringBuffer 클래스는 equals() 메서드를 오버라이딩하지 않아서 equals 메서드를 사용해도 등가비교연산자(==)로 비교한 것과 같은 결과를 얻는다.  
+반면에 toString()은 오버라이딩되어 있어서 StringBuffer인스턴스에 toString()을 호출하면, 담고있는 문자열을 String으로 반환한다.   
+그래서 StringBuffer 인스턴스에 담긴 문자열을 비교하기 위해서는 StringBuffer인스턴스에 toString()을 호출해서 String 인스턴스를 얻은 다음, 여기에 equals()메서드를 사용해서 비교해야 한다.  
+```java
+// StringBugger의 비교
+String s = sb.toString();   // sb와 sb2은 "abc" 문자열을 갖고 있다.
+String s2 = sb2.toString();
+
+System.out.println(s.equals(s2));   // true
+```
+<br>
+
+### StringBuffer클래스의 생성자와 메서드  
+- StringBuffer(): 16문자를 담을 수 있는 버퍼를 가진 StringBuffer 인스턴스를 생성한다.
+- StringBuffer(int length): 지정된 개수의 문자를 담을 수 있는 버퍼를 가진 StringBuffer 인스턴스를 생성한다.
+- StringBuffer(String str): 지정된 문자열 값(str)을 갖는 StringBugger 인스턴스를 생성한다.
+- StringBuffer append(추가할 값): 매개변수로 입력된 값을 문자열로 변환하여 StringBuffer 인스턴스가 저장하고 있는 문자열의 뒤에 덧붙인다.
+- int capacity(): StringBuffer 인스턴스의 버퍼크기를 알려준다. length()는 버퍼에 담긴 문자열의 길이를 알려준다.
+- char charAt(int index): 지정된 위치(index)에 있는 문자를 반환한다.
+- StringBuffer delete(int start, int end): 시작위치부터 끝 위치 사이에 있는 문자를 제거한다. 단, 끝위치의 문자는 제외
+- StringBuffer deleteCharAt(int index): 지정된 위치(index)의 문자를 제거한다.
+- StringBuffer insert(int pos, 추가할 값): 두번째 매개변수로 받은 값을 문자열로 변환하여 지정된 위치(pos)에 추가한다. pos는 0부터 시작한다.
+- int length(): StringBuffer 인스턴스에 저장되어 있는 문자열의 길이를 반환한다.
+- StringBuffer replace(int start, int end, String str): 지정된 범위(start~end)의 문자들을 주어진 문자열로 바꾼다. end위치의 문자는 범위에 포함되지 않는다.
+- StringBuffer reverse(): StringBuffer 인스턴스에 저장되어 있는 문자열의 순서를 거꾸로 나열한다.
+- void setCharAt(int index, char ch): 지정된 위치의 문자를 주어진 문자(ch)로 바꾼다.
+- void setLength(int newLength): 지정된 길이로 문자열의 길이를 변경한다. 길이를 늘리는 경우에 나머지 빈 공간을 널문자’\u0000’로 채운다.
+- String toString(): StringBuffer 인스턴스의 문자열을 String으로 반환한다.
+- String substring(int start): 지정된 범위 내의 문자열을 String으로 뽑아서 반환한다.
+- String substring(int start, int end): 지정된 범위 내의 문자열을 String으로 뽑아서 반환한다.  
+<br>
+
+### StringBuilder
+StringBuffer는 멀티쓰레드에 안전하도록 동기화되어 있다. 
+동기화가 StringBuffer의 성능을 떨어뜨린다. 
+따라서, 멀티쓰레드로 작성된 프로그램이 아닌 경우, StringBuffer의 동기화는 불필요하게 성능만 떨어뜨린다.   
+그래서 StringBuffer에서 쓰레드의 동기화만 뺀 StringBuilder가 새로 추가되었다. 
+StringBuilder는 StringBuffer와 완전히 똑같은 기능으로 작성되어 있어서, 소스코드에서 StringBuffer 대신 StringBuilder를 사용하도록 바꾸기만 하면 된다.  
+
+
+
