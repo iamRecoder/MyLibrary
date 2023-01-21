@@ -280,16 +280,116 @@ public static final double PI = 3.14159265...;  // 원주율
     - 버림
         - floor(숫자)
     - 반올림
-        - round(숫자): 항상 소수점 첫째자리에서 반올림을 해서 정수값을 결과로 반환한다.
-        - rint(숫자): round()처럼 소수점 첫 째 자리에서 반올림하지만, 반환값이 double이다. rint()는 두 정수의 정가운데 있는 값은 가장 가까운 짝수 정수를 반환한다.   
+        - round(숫자): 항상 소수점 첫째자리에서 반올림을 해서 정수값(int, long)을 결과로 반환한다. 따라서, 원하는 자리 수에서 반올림된 값을 얻기 위해서는 간단히 10의 n제곱으로 곱한 후, 다시 실수형(float,double)의 곱한 수로 나눠주기만 하면 된다. ex) round(9075.52)/100.0=90.76
+        - rint(숫자): round()처럼 소수점 첫째 자리에서 반올림하지만, 반환값이 double이다. rint()는 두 정수의 정가운데 있는 값(*.5)은 가장 가까운 짝수 정수를 반환한다.    
+
+### 예외를 발생시키는 메서드  
+메서드 이름에 `Exact`가 포함된 메서드들이 JDK1.8부터 새로 추가되었다. 이들은 정수형간의 연산에서 발생할 수 있는 오버플로우(overflow)를 감지하기 위한 것이다.  
+- int addExact(int x, int y): x+y
+- int subtractExact(int x, int y): x - y
+- int multiplyExact(int x, int y): x * y
+- int incrementExact(int a): a++
+- int decrementExact(int a): a--
+- int negateExact(int a): -a
+- int toIntExact(long value): (int)value - int로의 형변환  
+
+연산자는 단지 결과를 반환할 뿐, 오버플로우의 발생여부에 대해 알려주지 않는다. 그러나 위의 메서드들은 오버플로우가 발생하면, 예외(ArithmeticException)를 발생시킨다.   
 
 
 ### Math 클래스의 메서드  
-- abs(숫자): 주어진 값의 절대값을 반환한다.
-- ceil(숫자): 주어진 값을 올림하여 반환한다.
-- floor(숫자): 주어진 값을 버림하여 반환한다.
-- max(숫자1, 숫자2): 주어진 두 값을 비교하여 큰 쪽을 반환한다.
-- min(숫자1, 숫자2): 주어진 두 값을 비교하여 작은 쪽을 반환한다.
+- static double abs(숫자): 주어진 값의 절대값을 반환한다.
+- static double ceil(숫자): 주어진 값을 올림하여 반환한다.
+- static double floor(숫자): 주어진 값을 버림하여 반환한다.
+- static 숫자형(double,float,int,long) max(숫자1, 숫자2): 주어진 두 값을 비교하여 큰 쪽을 반환한다.
+- static 숫자형 min(숫자1, 숫자2): 주어진 두 값을 비교하여 작은 쪽을 반환한다.
 - static double random(): 0.0~1.0 범위(1.0은 미포함)의 임의의 double 값을 반환한다.
 - static double rint(double a): 주어진 double값과 가까운 정수값을 double형으로 반환한다. 단, 두 정수의 정가운데 있는 값(*.5)은 짝수를 반환한다.
-- static long round(double a): 소수점 첫쨰자리에서 반올림한 정수값(long)을 반환한다. 매개변수의 값이 음수인 경우, round()와 rint()의 결과가 다르다는 것에 주의하자.
+- static long round(double a): 소수점 첫째자리에서 반올림한 정수값(long)을 반환한다. 매개변수의 값이 음수인 경우, round()와 rint()의 결과가 다르다는 것에 주의하자.  
+- static double sqrt(double a): 제곱근. sqrt는 square root를 의미하며 제곱근을 뜻한다.
+- static double pow(double a, double b): a의 b승. pow는 power를 의미하며 거듭제곱을 뜻한다.  
+- static double log(double a): 자연로그 함수. 밑이 자연대수인 e인 함수이다.
+- static double log10(double a): 밑이 10인 로그 함수.
+
+
+### Wrapper 클래스  
+자바가 객체지향 언어임에도 8개의 기본형을 객체로 다루지 않는 이유는 높은 성능을 위해서이다.  
+때로는 기본형(primitive type) 변수도 객체로 다뤄야 하는 경우가 있다. 예를 들면, 매개변수로 객체를 요구할 때, 기본형 값이 아닌 객체로 저장해야할 때 등이 있다.  
+이 때 사용되는 것이 wrapper class 이다. 
+8개의 기본형을 대표하는 8개의 래퍼클래스를 이용하면 기본형 값을 객체로 다룰 수 있다.  
+
+래퍼 클래스의 생성자는 매개변수로 문자열이나 각 자료형의 값들을 인자로 받는다. 
+이때 주의해야할 것은 생성자의 매개변수로 문자열을 제공할 때, 각 자료형에 알맞은 문자열을 사용해야 한다는 것이다.  
+이처럼 래퍼 클래스는 객체생성 시에 생성자의 인자로 주어진 각 자료형에 알맞은 값을 내부적으로 저장하고 있으며, 이에 관련된 여러 메서드가 정의되어 있다.  
+
+|기본형|래퍼클래스|생성자|
+|:---:|:---:|:---|
+|boolean|Boolean|Boolean(boolean value)<br>Boolean(String s)|
+|char|**Character**|Character(char value)|
+|byte|Byte|Byte(byte value)<br>Byte(String s)|
+|short|Short|Short(short value)<br>Short(String s)|
+|int|**Integer**|Integer(int value)<br>Integer(String s)|
+|long|Long|Long(long value)<br>Long(String s)|
+|float|Float|Float(double value)<br>Float(float value)<br>Float(String s)|
+|double|Double|Double(double value)<br>Double(String s)|
+생성자는 deprecated된 상태로 대신 valueOf() 메서드를 사용하는 것이 더 적절하다고 작성되어 있다.  
+
+래퍼 클래스는 모두 equals()가 오버라이딩되어 있어서 주소값이 아닌 객체가 가지고 있는 값을 비교한다. 
+오토박싱이 된다고 해도 비교연산자를 사용할 수 없다. 대신 compareTo()를 제공한다.  
+그리고 toString()도 오버라이딩되어 있어서 객체가 가지고 있는 값을 문자열로 변환하여 반환한다.  
+이 외에도 래퍼 클래스들은 MAX_VALUE, MIN_VALUE, SIZE, BYTES, TYPE 등의 static 상수를 공통적으로 가지고 있다.  
+```java
+System.out.println(Integer.MAX_VALUE);  // 2147483647
+System.out.println(Integer.MIN_VALUE);  // -2147483648
+System.out.println(Integer.SIZE);       // 32
+System.out.println(Integer.BYTES);      // 4
+System.out.println(Integer.TYPE);       // int
+```
+<br>
+
+### Number 클래스  
+Number 클래스는 추상클래스로 내부적으로 숫자를 멤버변수로 갖는 래퍼 클래스의 조상이다.  
+아래의 그림은 래퍼 클래스의 상속계층도인데, 기본형 중에서 숫자와 관련된 래퍼 클래스들은 모두 Number 클래스의 자손이라는 것을 알 수 있다.   
+![image](https://user-images.githubusercontent.com/54930365/213881431-1f3a7264-df19-496d-8313-c1e5fa434f67.png)
+
+Number 클래스의 자손으로 BigInteger와 BigDecimal 등이 있는데, BigInteger는 long으로도 다룰 수 없는 큰 범위의 정수를, BigDecimal은 double로도 다룰 수 없는 큰 범위의 부동 소수점수를 처리하기 위한 것으로 연산자의 역할을 대신하는 다양한 메서드를 제공한다.   
+
+### 문자열을 숫자로 변환하기  
+- 문자열 -> 기본형:
+  `타입.parse타입(String s)`
+- 문자열 -> 래퍼 클래스:
+  `타입.valueOf(String s)`
+
+두 메서드 모두 숫자로 바꿔주는 일을 하지만, `타입.parse타입(String s)`은 반환값이 기본형이고 `타입.valueOf(String s)`는 반환값이 래퍼 클래스 타입이라는 차이가 있다.  
+
+JDK 1.5부터 도입된 `오토박싱(autoboxing)` 기능 때문에 반환값이 기본형일 때와 래퍼 클래스일 때의 차이가 없어졌다. 
+그래서 그냥 구별없이 valueOf()를 쓰는 것도 괜찮은 방법이다. 
+단, 성능은 valueOf()가 조금 더 느리다.  
+
+문자열이 10진수가 아닌 다른 진법(radix)의 숫자일 때도 변환이 가능하독 다음과 같은 메서드가 제공된다.  
+```java
+static int parseInt(String s, int radix)    // 문자열 s를 radix 진법으로 인식
+static int valueOf(String s, int radix)     // 문자열 s를 radix 진법으로 인식
+```
+<br>
+
+### 오토박싱 & 언박싱(autoboxing & unboxing)  
+JDK 1.5 이전에는 기본형과 참조형 간의 연산이 불가능했기 때문에, 래퍼 클래스로 기본형을 객체로 만들어서 연산해야 했다.   
+그러나 이제는 기본형과 참조형 간의 덧셈이 가능하다. 
+이는 컴파일러가 자동으로 변환하는 코드를 넣어주기 때문에 가능해졌다.  
+```java
+int sum = i + iObj;             // 컴파일 전의 코드
+int sum = i + iObj.intValue();  // 컴파일 후의 코드   
+```
+이 외에도 내부적으로 객체 배열을 가지고 있는 Vector 클래스나 ArrayList 클래스에 기본형 값을 저장해야할 때나 형변환이 필요할 때도 컴파일러가 자동적으로 코드를 추가해 준다.   
+기본형 값을 래퍼 클래스의 객체로 자동 변환해주는 것을 `오토박싱(autoboxing)`이라고 하고, 
+반대로 변환하는 것을 `언박싱(unboxing)`이라고 한다.  
+```java
+ex) 오토박싱과 언박싱  
+ArrayList<Integer> list = new ArrayList<Integer>();
+list.add(10);               // 오토박싱. 10 -> new Integer(10)
+int value = list.get(0);    // 언박싱. new Integer(10) -> 10
+```
+
+이처럼 개발자가 간략하게 쓴 구문을 컴파일러가 원래의 구문으로 변경해 주기 때문에, 
+기본형과 참조형 간의 형변환, 참조형 간의 연산이 가능하다.  
+
