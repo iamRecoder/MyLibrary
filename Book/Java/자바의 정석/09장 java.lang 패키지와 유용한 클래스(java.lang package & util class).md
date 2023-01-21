@@ -260,5 +260,36 @@ StringBuffer는 멀티쓰레드에 안전하도록 동기화되어 있다.
 그래서 StringBuffer에서 쓰레드의 동기화만 뺀 StringBuilder가 새로 추가되었다. 
 StringBuilder는 StringBuffer와 완전히 똑같은 기능으로 작성되어 있어서, 소스코드에서 StringBuffer 대신 StringBuilder를 사용하도록 바꾸기만 하면 된다.  
 
+<br>
+
+### Math 클래스  
+Math 클래스는 기본적인 수학계산에 유용한 메서드로 구성되어 있다.  
+Math 클래스의 생성자는 접근 제어자가 private이기 때문에 다른 클래스에사 Math 인스턴스를 생성할 수 없다.  
+그 이유는 클래스 내에 인스턴스 변수가 하나도 없어서 인스턴스를 생성할 필요가 없기 때문이다.  
+Math 클래스의 메서드는 모두 static이며, 아래와 같이 2개의 상수만 정의해 놓았다.  
+```java
+public static final double E = 2.718281828...;  // 자연로그의 밑
+public static final double PI = 3.14159265...;  // 원주율
+```
+<br>
+
+### 올림, 버림, 반올림
+- 올림, 버림, 반올림
+    - 올림
+        - ceil(숫자)
+    - 버림
+        - floor(숫자)
+    - 반올림
+        - round(숫자): 항상 소수점 첫째자리에서 반올림을 해서 정수값을 결과로 반환한다.
+        - rint(숫자): round()처럼 소수점 첫 째 자리에서 반올림하지만, 반환값이 double이다. rint()는 두 정수의 정가운데 있는 값은 가장 가까운 짝수 정수를 반환한다.   
 
 
+### Math 클래스의 메서드  
+- abs(숫자): 주어진 값의 절대값을 반환한다.
+- ceil(숫자): 주어진 값을 올림하여 반환한다.
+- floor(숫자): 주어진 값을 버림하여 반환한다.
+- max(숫자1, 숫자2): 주어진 두 값을 비교하여 큰 쪽을 반환한다.
+- min(숫자1, 숫자2): 주어진 두 값을 비교하여 작은 쪽을 반환한다.
+- static double random(): 0.0~1.0 범위(1.0은 미포함)의 임의의 double 값을 반환한다.
+- static double rint(double a): 주어진 double값과 가까운 정수값을 double형으로 반환한다. 단, 두 정수의 정가운데 있는 값(*.5)은 짝수를 반환한다.
+- static long round(double a): 소수점 첫쨰자리에서 반올림한 정수값(long)을 반환한다. 매개변수의 값이 음수인 경우, round()와 rint()의 결과가 다르다는 것에 주의하자.
