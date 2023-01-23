@@ -393,3 +393,15 @@ int value = list.get(0);    // 언박싱. new Integer(10) -> 10
 이처럼 개발자가 간략하게 쓴 구문을 컴파일러가 원래의 구문으로 변경해 주기 때문에, 
 기본형과 참조형 간의 형변환, 참조형 간의 연산이 가능하다.  
 
+<br>
+
+### 유용한 클래스  
+java.util 패키지에는 많은 수의 클래스가 있지만 실제로 자주 쓰이는 것들은 그렇게 많지 않기 때문에 중요한 클래스들만을 골라서 다양한 용도로 활용하는 방법을 보여주고자 한다.  
+
+### java.util.Objects 클래스  
+Object 클래스의 보조 클래스로 모든 메서드가 `static`이다. 
+객체의 비교나 널체크에 유용하다.  
+- static boolean isNull(Object obj): null이면 true를 반환한다.
+- static boolean nonNull(Object obj): null이 아니면 true를 반환한다.  
+- 
+
