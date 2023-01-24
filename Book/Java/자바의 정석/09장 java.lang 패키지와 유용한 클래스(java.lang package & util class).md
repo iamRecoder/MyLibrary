@@ -403,5 +403,25 @@ Object 클래스의 보조 클래스로 모든 메서드가 `static`이다.
 객체의 비교나 널체크에 유용하다.  
 - static boolean isNull(Object obj): null이면 true를 반환한다.
 - static boolean nonNull(Object obj): null이 아니면 true를 반환한다.  
-- 
+- static <T> T requireNonNull(T obj): 객체가 null이 아니어야 하는 경우에 사용한다. null이면 NullPointerException을 발생시킨다.
+- static <T> T requireNonNull(T obj, String message): 위와 동일하다. 문자열은 예외의 메시지가 된다.
+- static <T> T requireNonNull(T obj, Supplier<String> messageSupplier): 위와 동일하다.
+  다음의 세 줄을 requireNonNull()의 호출만으로 간단히 끝낼 수 있다.
+    ```java
+    if(name == null)
+        throw new NullPointerException("name must not be null.");
+    this.name = name;
+    
+    // 위의 세 줄을 requireNonNull()을 호출하여 간단하게 한 줄로 해결 가능하다.
+    this.name = Objects.requireNonNull(name, "name must not be null.");
+    ```
+- static int compare(Object a, Object b, Comparator c): 두 비교대상이 같으면 0, 크면 양수, 작으면 음수를 반환한다. Comparator은 두 객체를 비교하는 기준이 된다.
+- static boolean equals(Object a, Object b): Object 클래스에 정의된 equals()의 기능 + null 검사
+- static boolean deepEquals(Object a, Object b): 객체를 재귀적으로 비교하기 때문에 다차원 배열의 비교도 가능하다.  
+- static String toString(Object o): Object 클래스에 정의된 toString()의 기능 + null 검사
+- static String toString(Object o, String nullDefault): Object 클래스에 정의된 toString()의 기능 + null 검사 + o가 null일 경우 대신 사용할 값을 nullDefault에 지정할 수 있다.
+
+static import문을 사용하더라도 Object 클래스의 메서드와 이름이 같은 것들은 충돌이 난다. 즉, 컴파일러가 구별을 못한다. 
+그럴 때는 클래스의 이름을 붙여줄 수밖에 없다.  
+
 
