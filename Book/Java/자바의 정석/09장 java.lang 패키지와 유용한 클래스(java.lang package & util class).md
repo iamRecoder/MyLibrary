@@ -424,4 +424,22 @@ Object 클래스의 보조 클래스로 모든 메서드가 `static`이다.
 static import문을 사용하더라도 Object 클래스의 메서드와 이름이 같은 것들은 충돌이 난다. 즉, 컴파일러가 구별을 못한다. 
 그럴 때는 클래스의 이름을 붙여줄 수밖에 없다.  
 
+### java.util.Random 클래스  
+난수를 얻는 방법을 생각하면 Math.random()이 떠오를 것이다. 
+이 외에도 Random클래스를 사용하면 난수를 얻을 수 있다. 
+사실 Math.random()은 내부적으로 Random 클래스의 인스턴스를 생성해서 사용하는 것이므로 둘 중에서 편한 것을 사용하면 된다.  
 
+Math.random()과 Random의 가장 큰 차이점이라면, 종자값(seed)을 설정할 수 있다는 것이다. 
+종자값이 같은 Random 인스턴스들은 항상 같은 난수를 순서대로 반환한다.  
+
+### Random 클래스의 생성자와 메서드  
+- Random(): 현재시간을 종자값(seed)으로 이용하는 Random 인스턴스를 생성한다.
+- Random(long seed): 매개변수 seed를 종자값으로 하는 Random인스턴스를 생성한다.
+- boolean nextBoolean(): boolean 타입의 난수를 반환한다.
+- void nextBytes(byte[] bytes): bytes 배열에 byte 타입 난수를 채워서 반환한다.  
+- double nextDouble(): double 타입의 난수를 반환한다. (0.0 <= x <1.0)
+- float nextFloat(): float 타입의 난수를 반환한다. (0.0 <= x < 1.0)
+- int nextInt(): int 타입의 난수를 반환한다. (int의 범위)
+- int nextInt(int n): 0~n의 범위에 있는 int 값을 반환한다. (n은 범위에 포함되지 않음)
+- long nextLong(): long 타입의 난수를 반환한다. (long 범위)
+- void setSeed(long seed): 종자값을 주어진 seed 값으로 변경한다.
