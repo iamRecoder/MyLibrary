@@ -430,7 +430,7 @@ static import문을 사용하더라도 Object 클래스의 메서드와 이름�
 사실 Math.random()은 내부적으로 Random 클래스의 인스턴스를 생성해서 사용하는 것이므로 둘 중에서 편한 것을 사용하면 된다.  
 
 Math.random()과 Random의 가장 큰 차이점이라면, 종자값(seed)을 설정할 수 있다는 것이다. 
-종자값이 같은 Random 인스턴스들은 항상 같은 난수를 순서대로 반환한다.  
+종자값이 같은 Random 인스턴스들은 시스템이나 실행시간 등에 관계없이 항상 같은 난수를 순서대로 반환한다.  
 
 ### Random 클래스의 생성자와 메서드  
 - Random(): 현재시간을 종자값(seed)으로 이용하는 Random 인스턴스를 생성한다.
@@ -442,4 +442,232 @@ Math.random()과 Random의 가장 큰 차이점이라면, 종자값(seed)을 설
 - int nextInt(): int 타입의 난수를 반환한다. (int의 범위)
 - int nextInt(int n): 0~n의 범위에 있는 int 값을 반환한다. (n은 범위에 포함되지 않음)
 - long nextLong(): long 타입의 난수를 반환한다. (long 범위)
-- void setSeed(long seed): 종자값을 주어진 seed 값으로 변경한다.
+- void setSeed(long seed): 종자값을 주어진 seed 값으로 변경한다.  
+
+
+### 정규식(Regular Expression) - java.util.regex 패키지  
+정규식이란 텍스트 데이터 중에서 원하는 조건(패턴)과 일치하는 문자열을 찾아내기 위해 사용하는 것으로 미리 정의된 기호와 문자를 이용해서 작성한 문자열을 말한다.  
+정규식을 이용하면 많은 양의 텍스트 파일 중에서 원하는 데이터를 손쉽게 뽑아낼 수도 있고 입력된 데이터가 형식에 맞는지 체크할 수도 있다.  
+
+다음은 data라는 문자열 배열이 담긴 문자열 중에서 지정한 정규식과 일치하는 문자열을 출력하는 예제이다. 
+Pattern은 정규식을 정의하는데 사용되고 Matcher는 정규식(패턴)을 데이터와 비교하는 역할을 한다.  
+```java
+String[] data = {"bat", "baby", "cA", "ca", "co", "c.", "c0", "car", "combat", "count", "date"};
+
+// 1. 정규식을 매개변수로 Pattern 클래스의 static 메서드인 Pattern compile(String regex)을 호출하여 Pattern 인스턴스를 얻는다.
+Pattern p = Pattern.compile("c[a-z]*");     // c로 시작하는 소문자영단어
+
+for(int i=0; i<data.length; i++){
+    // 2. 정규식으로 비교할 대상을 매개변수로 Pattern 클래스의 Matcher matcher(CharSequence input)를 호출해서 Matcher 인스턴스를 얻는다.
+    Matcher m = p.matcher(data[i]);
+    
+    // 3. Matcher 인스턴스에 boolean matches()를 호출해서 정규식에 부합하는지를 확인한다.
+    if(m.matches()){
+        System.out.print(data[i] + ", ");
+    }
+}
+```
+```text
+[실행결과]
+ca, co, car, combat, count, 
+```
+<br>
+
+자주 사용되는 정규식 패과 설명은 다음과 같다.  
+
+| 정규식 패턴                                 | 설명                                                                                                |
+|:---------------------------------------|:--------------------------------------------------------------------------------------------------|
+| c[a-z]*                                | c로 시작하는 영단어                                                                                       |
+| c[a-z]                                 | c로 시작하는 두 자리 영단어                                                                                  |
+| c[a-zA-Z]                              | c로 시작하는 두 자리 영단어 (대소문자 구분안함)                                                                      |
+| c[a-zA-Z0-9]<br>c\w                    | c로 시작하고 숫자와 영어로 조합된 두 글자                                                                          |
+| .*                                     | 모든 문자열                                                                                            |
+| c.                                     | c로 시작하는 두 자리 문자열                                                                                  |
+| c.*                                    | c로 시작하는 모든 문자열(기호 포함)                                                                             |
+| c\\.                                   | c.와 일치하는 문자열   '.'은 패턴작성에 사용되는 문자이므로 escape 문자인 '\'를 사용해야 된다.                                     |
+| c\d<br>c[0-9]                          | c와 숫자로 구성된 두 자리 문자열                                                                               |
+| c.*t                                   | c로 시작하고 t로 끝나는 모든 문자열                                                                             |
+| [b&#x7c;c].* <br>[bc].* <br>[b-c].*    | b 또는 c로 시작하는 문자열                                                                                  |
+| [^b&#x7c;c].* <br>[^bc].* <br>[^b-c].* | b 또는 c로 시작하지 않는 문자열                                                                               |
+| .*a.\*                                 | a를 포함하는 모든 문자열 <br> *: 0 또는 그 이상의 문자                                                              |
+| .*a.+                                  | a를 포함하는 모든 문자열   <br> +: 1 또는 그 이상의 문자. '+'는 '*'과는 달리 반드시 하나 이상의 문자가 있어야 하므로 a로 끝나는 단어는 포함되지 않았다. |
+| [b&#x7c;c].{2}                         | b 또는 c로 시작하는 세 자리 문자열   <br>(b 또는 c 다음에 두 자리이므로 모두 세 자리)                                          |
+| 0\\\d{1,2}                             | 0으로 시작하는 최소 2자리 최대 3자리 숫자(0포함)                                                                    |
+| \\\d{3,4}                              | 최소 3자리 최대 4자리의 숫자                                                                                 |
+| \\\d{4}                                |4자리의 숫자|
+| (0\\\d{1,2})-(\\\d{3,4})-(\\\d{4})     | 정규식의 일부를 괄호로 나누어 묶어서 그룹화할 수 있다.<br>그리고 그룹화된 부분은 group(int i)를 이용해서 나누어 얻을 수 있다.|
+<br>
+
+```java
+ex) 정규식 예제
+String source = "A broken hand works, but not a broken heart.";
+String pattern = "broken";
+StringBuffer sb = new StringBuffer();
+
+Pattern p = Pattern.compile(pattern);
+Matcher m = p.matcher(source);
+
+int i = 0;
+while(m.find()){
+    System.out.println(++i + "번째 매칭:" + m.start() + "~" + m.end());
+    m.appendReplacement(sb, "drunken");     // broken을 drunken으로 치환하여 sb에 저장한다.
+}
+
+m.appendTail(sb);   // 마지막으로 치환된 이후의 부분을 sb에 덧붙인다.  
+System.out.println("Replacement count : " + i);
+System.out.println("result:" + sb.toString());
+```
+```text
+[실행결과]
+1번째 매칭:2~8
+2번째 매칭:31~37
+Replacement count : 2
+result:A drunken hand works, but not a drunken heart.
+```
+Matcher의 find()로 정규식과 일치하는 부분을 찾으면, 그 위치를 start()와 end()로 알아 낼 수 있고 appendReplacement(StringBuffer sb, String replacement)를 이용해서 원하는 문자열(replacement)로 치환할 수 있다. 
+치환된 결과는 StringBuffer인 sb에 저장되는데, sb에 저장되는 내용을 단계별로 살펴보면 이해하기 쉬울 것이다.  
+
+
+### java.util.Scanner 클래스  
+Scanner는 화면, 파일, 문자열과 같은 입력소스로부터 문자데이터를 읽어오는데 도움을 줄 목적으로 JDK1.5부터 추가되었다. 
+Scanner에는 다음과 같은 생성자를 지원하기 때문에 다양한 입력소스로부터 데이터를 읽을 수 있다.  
+- Scanner(String source)
+- Scanner(File source)
+- Scanner(InputStream source)
+- Scanner(Readable source)
+- Scanner(ReadableByteChannel source)
+- Scanner(Path source)  
+
+또한 Scanner는 정규식 표현을 이용한 라인단위의 검색을 지원하며 구분자에도 정규식 표현을 사용할 수 있어서 복잡한 형태의 구분자도 처리가 가능하다.  
+- Scanner useDelimiter(Pattern pattern)
+- Scanner useDelimiter(String pattern)
+
+입력의 변천사는 다음과 같다.
+```text
+// JDK1.5 이전
+BufferReader br = new BufferedReader(new InputStreamReader(System.in));
+String input = br.readLine();
+
+// JDK1.5 이후(java.util.Scanner)
+Scanner s = new Scanner(System.in);
+String input = s.nextLine();
+
+// JDK1.6 이후(java.io.Console) - 이클립스 등 IDE에서 잘 동작하지 않는다. Scanner와 성능 측면에서 거의 같다.
+Console console = System.console();
+String input = console.readLine();
+```
+<br>
+
+Scanner에서는 다음과 같은 메서드를 제공하으로써 입력받은 문자를 다시 변환하는 수고를 덜어 준다.  
+- boolean nextBoolean()
+- byte nextByte()
+- short nextShort()
+- int nextInt()
+- long nextLong()
+- double nextDouble()
+- float nextFloat()
+- String nextLine()
+
+
+### java.util.StringTokenizer 클래스  
+StringTokenizer는 긴 문자열을 지정된 구분자를 기준으로 토큰이라는 여러 개의 문자열로 잘라내는 데 사용된다.   
+StringTokenizer를 이용하는 방법 이외에도 String의 split(String regex)이나 Scanner의 useDelimiter(String pattern)를 사용할 수도 있지만, 
+이 두 가지 방법은 정규식 표현을 사용해야하므로 정규식 표현에 익숙하지 않은 경우 StringTokenizer를 사용하는 것이 간단하면서도 명확한 결과를 얻을 수 있을 것이다.  
+```java
+String[] result = "100,200,300,400".split(",");
+Scanner sc2 = new Scanner("100,200,300,400").useDelimiter(",");
+```
+
+그러나 StringTokenizer는 구분자로 단 하나의 문자 밖에 사용하지 못하기 때문에 보다 복잡한 형태의 구분자로 문자열을 나누어야 할 때는 어쩔 수 없이 정규식을 사용하는 메서드를 사용해야 할 것이다.   
+
+### StringTokenizer의 생성자와 메서드  
+StringTokenizer의 주로 사용되는 생성자와 메서드는 다음과 같다.  
+- StringTokenizer(String str, String delim): 문자열(str)을 지정된 구분자(delim)로 나누는 StringTokenizer를 생성한다. (구분자는 토큰으로 간주되지 않음)
+- StringTokenizer(String str, String delim, boolean returnDelims): 문자열(str)을 지정된 구분자(delim)로 나누는 StringTokenizer를 생성한다. returnDelims의 값을 true로 하면 구분자도 토큰으로 간주된다.
+- int countTokens(): 전체 토큰의 수를 반환한다.
+- boolean hasMoreTokens(): 토큰이 남아있는지 알려준다.
+- String nextToken(): 다음 토큰을 반환한다.  
+
+다음은 ','를 구분자로 하는 StringTokenizer를 생성해서 문자열을 나누어 출력하는 예제이다.  
+```java
+ex) StringTokenizer 예제
+String source = "100,200,300,400";
+StringTokenizer st = new StringTokenizer(source, ",");
+
+while(st.hasMoreTokens()){
+    System.out.println(st.nextToken());
+}
+```
+```text
+[실행결과]
+100
+200
+300
+400
+```
+
+주의할 것은 StringTokenizer는 단 한 문자의 구분자만 사용할 수 있기 때문에, `new StringTokenizer(source, "+-*/=()")` 이와 같이 여러 문자들을 구분자로 지정할 경우, 전체가 하나의 구분자가 아니라 각각의 문자가 모두 구분자가 된다.  
+
+split()은 빈 문자열도 토큰으로 인식하는 반면 StringTokenizer는 빈 문자열을 토큰으로 인식하지 않는다. 
+이 외에도 성능의 차이가 있다. split()은 데이터를 토큰으로 잘라낸 결과를 배열에 담아서 반환하기 때문에 데이터를 토큰으로 바로바로 잘라서 반환하는 StringTokenizer보다 성능이 떨어질 수밖에 없다. 
+그러나 데이터의 양이 많은 경우가 아니라면 별 문제가 되지 않으므로 크게 신경 쓸 부분은 아니다.   
+
+### java.math.BigInteger 클래스  
+정수형으로 표현할 수 있는 값에는 한계가 있다. 
+가장 큰 정수형 타입인 long으로 표현할 수 있는 값은 10진수로 19자리 정도이다. 
+이보다 더 큰 값을 다뤄야할 때 사용하면 좋은 것이 BigInteger이다.  
+BigInteger는 내부적으로 int 배열을 사용해서 값을 다룬다. 
+그래서 long 타입보다 훨씬 큰 값을 다룰 수 있는 것이다. 
+대신 성능은 long 타입보다 떨어질 수밖에 없다.  
+
+BigInteger는 불변이다. 그리고 모든 정수형이 그렇듯이 BigInteger 역시 값을 '2의 보수'의 형태로 표현한다.  
+```text
+final int signum;   // 부호. 1(양수), 0, -1(음수) 셋 중 하나
+final int[] mag;    // 값(magnitude)
+```
+좀 더 자세히 말하면, 위의 코드에서 알 수 있듯이 부호를 따로 저장하고 배열에는 값 자체만 저장한다. 
+그래서 signum의 값이 -1, 즉 음수인 경우, 2의 보수법에 맞게 mag의 값을 변환해서 처리한다. 
+그래서 부호만 다른 두 값의 mag는 같고 signum은 다르다.  
+
+- BigInteger의 생성
+  - BigInteger val = new BigInteger("12323523343435242");    // 문자열로 생성
+  - BigInteger val = new BigInteger("FFFF", 16);            // 지정된 진법(radix)의 문자열로 변환
+  - BigInteger val = new BigInteger.valueOf(1234567890L);   // 숫자로 생성
+<br>
+- 다른 타입으로의 변환  
+  - String toString(): 문자열로 변환
+  - String toString(int radix): 지정된 진법(radix)의 문자열로 변환
+  - byte[] toByteArray(): byte배열로 변환
+  - int intValue(): int 기본형으로 변환
+  - long longValue(): long 기본형으로 변환
+  - float floatValue(): float 기본형으로 변환
+  - double doubleValue(): double 기본형으로 변환
+  - byte  byteValueExact(): byte 기본형으로 변환. 이름 끝에 'Exact'가 붙은 것들은 변환한 결과가 변환한 타입의 범위에 속하지 않으면 ArithmeticException을 발생시킨다.  
+  - int intValueExact(): int 기본형으로 변환. 변환한 결과가 변환한 타입의 범위에 속하지 않으면 ArithmeticException을 발생시킨다.
+  - long longValueExact(): long 기본형으로 변환. 변환한 결과가 변환한 타입의 범위에 속하지 않으면 ArithmeticException을 발생시킨다.
+    <br>
+- BigInteger의 연산  
+  - BigInteger add(BigInteger val): 덧셈(this + val)
+  - BigInteger subtract(BigInteger val): 뺄셈(this - val)
+  - BigInteger multiply(BigInteger val): 곱셈(this * val)
+  - BigInteger divide(BigInteger val): 나눗셈(this / val)
+  - BigInteger remainder(BigInteger val): 나머지(this % val)   
+  ** BigInteger는 불변으로, 반환타입이 BigInteger란 얘기는 새로운 인스턴스가 반환된다는 뜻이다.  
+    <br>
+- 비트 연산 메서드  
+  - int boolean bitCount(): 2진수로 표현했을 때, 1의 개수(음수는 0의 개수)를 반환
+  - int bitLength(): 2진수로 표현했을 때, 값을 표현하는데 필요한 bit 수
+  - boolean testBit(int n): 우측에서 n+1번째 비트가 1이면 true, 0이면 false
+  - BigInteger setBit(int n): 우측에서 n+1번째 비트를 1로 변경
+  - BigInteger clearBit(int n): 우측에서 n+1번째 비트를 0으로 변경
+  - BigInteger flipBit(int n): 우측에서 n+1번째 비트를 전환(1->0, 0->1)
+  ** 워낙 큰 숫자를 다루기 위한 클래스이므로, 성능을 향상시키기 위해 비트단위로 연산을 수행하는 메서드들을 많이 가지고 있다.  
+
+
+### java.math.BigDecimal 클래스  
+double 타입으로 표현할 수 있는 값은 상당히 범위가 넓지만, 정밀도가 최대 13자이 밖에 되지 않고 실수형의 특성상 오차를 피할 수 없다. 
+BigDecimal은 실수형과 달리 정수를 이용해서 실수를 표현한다. 
+앞에서 배운 것과 같이 실수의 오차는 10진 실수를 2진 실수로 정확히 변환할 수 없는 경우가 있기 때문에 발생하는 것이므로, 오차가 없는 2진 정수로 변환하여 다루는 것이다. 
+실수를 정수와 10의 제곱의 곱으로 표현한다.   
+
+
