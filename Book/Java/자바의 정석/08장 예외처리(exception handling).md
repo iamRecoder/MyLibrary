@@ -1,4 +1,4 @@
-# CH08.예외처리
+# CH08. 예외처리
 ## 예외처리(exception handling)
 ### 프로그램 오류  
 ```text
