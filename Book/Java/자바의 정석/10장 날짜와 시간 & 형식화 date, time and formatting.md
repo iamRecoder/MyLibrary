@@ -31,3 +31,11 @@ Date d = new Date();
 Calendar cal = Calendar.getInstance();
 cal.setTime(d);
 ```
+날짜와 시간을 원하는 값으로 변경하려면 set 메서드를 사용하면 된다.  
+- void set(int field, int value)
+- void set(int year, int month, int date);
+- void set(int year, int month, int date, int hourOfDay, int minute)
+- void set(int year, int month, int date, int hourOfDay, int minute, int second)
+
+
+
