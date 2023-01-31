@@ -112,6 +112,14 @@ Map.Enty 인터페이스에 정의된 인터페이스는 다음과 같다. (JDK8
 
 ## 컬렉션 프레임웍의 구성요소들
 ### ArrayList
-ArrayList는 List 인터체이스를 구현하기 때문에 데이터의 저장순서가 유지되고 중복을 허용한다는 특징을 갖는다.  
+ArrayList는 List 인터체이스를 구현하기 때문에 데이터의 저장순서가 유지되고 중복을 허용한다는 특징을 갖는다.   
+ArrayList는 기존의 Vector를 개선한 것으로 Vector와 구현원리와 기능적인 측면에서 동일하다고 할 수 있다.  
+ArrayList는 Object 배열을 이용해서 데이터를 순차적으로 저장한다. Object 배열에 객체가 순서대로 저장되며, 배열에 더 이상 저장할 공간이 없으면 보다 큰 새로운 배열을 생성해서 기존의 배열에 저장된 내용을 새로운 배열로 복사한 다음에 저장된다.  
+
+- ArrayList(): 크기가 10인 ArrayList를 생성
+- ArrayList(Collection c): 주어진 컬렉션이 저장된 ArrayList를 생성
+- ArrayList(int initialCapacity): 지정된 초기용량을 갖는 ArrayList를 생성
+- boolean add(Object o): ArrayList의 마지막에 객체를 추가. 성공하면 true.
+- 
 
 
