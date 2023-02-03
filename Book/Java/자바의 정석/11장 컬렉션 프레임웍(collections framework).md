@@ -210,10 +210,141 @@ class Node {
 ```
 
 <br>
-더블 링크드 리스트의 접근성을 보다 향상시킨 것이 `더ㅂㄹ 써큘러 링크드 리스트(이중 원형 연결리스트, doubly circular linked list)`인데, 
+더블 링크드 리스트의 접근성을 보다 향상시킨 것이 `더블 써큘러 링크드 리스트(이중 원형 연결리스트, doubly circular linked list)`인데, 
 단순히 더블 링크드 리스트의 첫 번째 요소와 마지막 요소를 서로 연결시킨 것이다. 
 이렇게 하면, 마지막 요소의 다음 요소가 첫 번째 요소가 되고, 첫 번째 요소의 이전 요소가 마지막 요소가 된다.  
 
 실제로 LinkedList 클래스는 이름과 달리 `더블 링크드 리스트`로 구현되어 있는데, 이는 링크드 리스트의 단점이 낮은 접근성을 높이기 위한 것이다.    
 
 LinkedList의 생성자와 메서드는 다음과 같다.  
+- LinkedList(): LinkedList 객체를 생성
+- LinkedList(Collection c): 주어진 컬렉션을 포함하는 LinkedList 객체를 생성
+- boolean add(Object o): 지정된 객체를 LinkedList의 끝에 추가. 저장에 성공하면 true, 실패하면 false
+- void add(int index, Object element): 지정된 위치(index)에 객체(element)를 추가
+- boolean addAll(Collection c): 주어진 컬렉션에 포함된 모든 요소를 LinkedList의 끝에 추가한다. 성공하면 true, 실패하면 false
+- boolean addAll(int index, Collection c): 지정된 위치에 주어진 컬렉션에 포함된 모든 요소를 추가. 성공하면 true, 실패하면 false
+- void clear(): LinkedList의 모든 요소를 삭제
+- boolean contains(Object o): 지정된 객체가 LinkedList에 포함되어있는지 알려줌
+- boolean containsAll(Collection c): 지정된 컬렉션의 모든 요소가 포함되었는지 알려줌
+- Object get(int index): 지정된 위치의 객체를 반환
+- int indexOf(Object o): 지정된 객체가 저장된 위치(앞에서 몇 번째)를 반환
+- boolean isEmpty(): LinkedList가 비어있는지 알려준다. 비어있으면 true
+- Iterator iterator(): Iterator를 반환한다.
+- int lastIndexOf(Object o): 지정된 객체의 위치를 반환(끝부터 역순검색)
+- ListIterator listIterator(): ListIterator를 반환
+- ListIterator listIterator(int index): 지정된 위치부터 시작하는 ListIterator를 반환
+- Object remove(int index): 지정된 위치의 객체를 LinkedList에서 제거
+- boolean remove(Object o): 지정된 객체를 LinkedList에서 제거. 성공하면 true, 실패하면 false
+- boolean removeAll(Collection c): 지정된 컬렉션의 요소와 일치하는 요소를 모두 삭제
+- boolean retainAll(Collection c): 지정된 컬렉션의 요소와 일치하는 요소만 제외하고 모두 삭제
+- Object set(int index, Object element): 지정된 위치의 객체를 주어진 객체로 바꿈
+- int size(): LinkedList에 저장된 객체의 수를 반환
+- List subList(int fromIndex, int toIndex): LinkedList의 일부를 List로 반환
+- Object[] toArray(): LinkedList에 저장된 객체를 배열로 반환
+- Object[] toArray(Object[] a): LinkedList에 저장된 객체를 주어진 배열에 저장하여 반환
+- Object element(): LinkedList의 첫 번째 요소를 반환
+- boolean offer(Object o): 지정된 객체를 LinkedList의 끝에 추가. 성공하면 true, 실패하면 false
+- Object peek(): LinkedList의 첫 번째 요소를 반환
+- boolean poll(): LinkedList의 첫 번째 요소를 반환. LinkedList에서는 제거된다.
+- Object remove(): LinkedList의 첫 번째 요소를 제거
+- void addFirst(Object o): LinkedList의 맨 앞에 객체를 추가
+- void addLast(Object o): LinkedList의 맨 끝에 객체를 추가
+- Iterator descendingIterator(): 역순으로 조회하기 위한 DescendingIterator를 반환
+- Object getFirst(): LinkedList의 첫 번째 요소를 반환
+- Object getLast(): LinkedList의 마지막 요소를 반환
+- boolean offerFirst(Object o): LinkedList의 맨 앞에 객체를 추가. 성공하면 true
+- boolean offerLast(Object o): LinkedList의 맨 끝에 객체를 추가. 성공하면 true
+- Object peekFirst(): LinkedList의 첫 번째 요소를 반환
+- Object peekLast(): LinkedList의 마지막 요소를 반환
+- Object pollFirst(): LinkedList의 첫 번째 요소를 반환하면서 제거
+- Object pollLast(): LinkedList의 마지막 요소를 반환하면서 제거
+- Object pop(): removeFirst()와 동일. LinkedList의 첫 번째 요소를 제거
+- void push(Object o): addFirst()와 동일. LinkedList의 맨 앞에 객체를 추가
+- Object removeFirst(): LinkedList의 첫 번째 요소를 제거
+- Object removeLast(): LinkedList의 마지막 요소를 제거
+- boolean removeFirstOccurence(Object o): LinkedList에서 첫 번째로 일치하는 객체를 제거
+- boolean removeLastOccurence(Object o): LinkedList에서 마지막으로 일치하는 객체를 제거
+
+<br>
+
+LinkedList 역시 List 인터페이스를 구현했기 떄문에 ArrayLust와 내부구현방법만 다를 뿐 제공하는 메서드의 종류와 기능은 거의 같다.  
+ArrayList와 LinkedList의 성능차이는 다음과 같다.  
+
+1. **순차적으로 추가/삭제하는 경우에는 ArrayList가 LinkedList보다 빠르다.**  
+   - 단, ArrayList의 크기가 충분하지 않으면, 새로운 크기의 ArrayList를 생성하고 데이터를 복사하는 일이 발생하게 되므로 순차적으로 데이터를 추가해도 ArrayList보다 LinkedList가 더 빠를 수 있다.  
+   - 순차적으로 삭제한다는 것은 마지막 데이터부터 역순으로 삭제해나가는 것을 의미하며, ArrayList는 마지막 데이터부터 삭제할 경우 각 요소들의 재배치가 필요하지 않기 때문에 상당히 빠르다.(단지 마지막 요소의 값을 null로만 바꾸면 되니까)  
+2. **중간 데이터를 추가/삭제하는 경우에는 LinkedList가 ArrayList보다 빠르다.**  
+   - 중간 요소를 추가 또는 삭제하는 경우, LinkedList는 각 요소간의 연결만 변경해주면 되기 때문에 처리속도가 상당히 빠르다.  
+3. **특정 위치의 값을 읽는 시간(접근시간)은 ArrayList가 LinkedList보다 빠르다.**  
+   - 배열은 각 요소들이 연속적으로 메모리상에 존재하기 때문에 간단한 계산만으로 원하는 요소의 주소를 얻어서 저장된 데이터를 곧바로 읽어올 수 있지만, LinkedList는 불연속적으로 위치한 각 요소들이 서로 연결된 것이라 처음부터 n번째 데이터까지 차례대로 따라가야만 원하는 값을 얻을 수 있다.  
+
+|컬렉션|읽기(접근시간)|추가/삭제| 비고                               |
+|:---:|:---:|:---:|:---------------------------------|
+|ArrayList|빠르다|느리다| 순차적인 추가/삭제는 더 빠름<br>비효율적인 메모리 사용 |
+|LinkedList|느리다|빠르다| 데이터가 많을수록 접근성이 떨어짐               |
+
+<br>
+
+### Stack과 Queue  
+스택은 마지막에 저장한 데이터를 가장 먼저 꺼내게 되는 LIFO(Last In First Out) 구조로 되어 있고, 
+큐는 처음에 저장한 데이터를 가장 먼저 꺼내게 되는 FIFO(First In First Out) 구조로 되어 있다.  
+
+순차적으로 데이터를 추가하고 삭제하는 스택은 ArrayList와 같은 배열기반의 컬렉션 클래스가 적합하다.  
+큐는 ArrayList보다 데이터의 추가/삭제가 쉬운 LinkedList로 구현하는 것이 적합하다.  
+
+Stack의 메서드는 다음과 같다.  
+- boolean empty(): Stacok이 비어있는지 알려준다.  
+- Object peek(): Stack의 맨 위에 저장된 객체를 반환. pop()과 달리 Stack에서 객체를 꺼내지는 않음.(비어있을 때는 EmptyStackException 발생)  
+- Object pop(): Stack의 맨 위에 저장되는 객체를 꺼낸다. (비어있을 때는 EmptyStackException 발생)  
+- Object push(Object item): Stack에 객체(item)를 저장한다.
+- int search(Object o): Stack에서 주어진 객체를 찾아서 그 위치를 반환. 못 찾으면 -1을 반환. (배열과 달리 위치는 0이 아닌 1부터 시작)
+
+<br>
+
+Queue의 메서드는 다음과 같다.  
+- boolean add(Object o): 지정된 객체를 Queue에 추가한다. 성공하면 true를 반환. 저장공간이 부족하면 IllegalStateException 발생
+- Object remove(): Queue에서 객체를 꺼내 반환. 비어있으면 NoSuchElementException 발생
+- Object element(): 삭제없이 요소를 읽어온다. peek과 달리 Queue가 비어있을 때 NoSuchElementException 발생
+- boolean offer(Object o): Queue에 객체를 저장. 성공하면 true, 실패하면 false를 반환
+- Object poll(): Queue에서 객체를 꺼내서 반환. 비어있으면 null을 반환
+- Object peek(): 삭제없이 요소를 읽어온다. Queue가 비어있으면 null을 반환
+
+<br>
+
+```java
+public static void main(String[] args){
+    Stack st = new Stack();
+    Queue q = new LinkedList();   // Queue 인터페이스의 구현체인 LinkedList를 사용
+    
+    st.push("0"); st.push("1"); st.push("2");
+    q.offer("0"); q.offer("1"); q.offer("2");
+    
+    System.out.println("= Stack =");
+    while(!st.empty()){
+        System.out.println(st.pop());
+    }
+    
+    System.out.println("= Queue ");
+    while(!q.isEmpty()){
+        System.out.println(q.poll());
+    }
+}
+```
+```text
+// 실행 결과
+= Stack = 
+2
+1
+0
+= Queue =
+0
+1
+2
+```
+
+<br>
+
+자바에서는 스택을 Stack 클래스로 구현하여 제공하고 있지만 
+큐는 Queue 인터페이스로 정의해 놓았을 뿐 별도의 클래스를 제공하고 있지 않다. 
+대신 Queue 인터페이스를 구현한 클래스들이 있어서 이 들 중의 하나를 선택해서 사용하면 된다.  
+
