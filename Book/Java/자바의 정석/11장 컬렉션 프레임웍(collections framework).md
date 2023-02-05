@@ -112,6 +112,7 @@ Map.Enty 인터페이스에 정의된 인터페이스는 다음과 같다. (JDK8
 - Object setValue(Object value): Entry의 value개게를 지정된 객체로 바꾼다.
 
 <br>
+<br>
 
 ## 컬렉션 프레임웍의 구성요소들
 ### ArrayList
@@ -165,7 +166,7 @@ ArrayList나 Vector 같이 배열을 이용한 자료구조는 데이터를 읽�
 remove 메서드의 실제 코드에서 확인했듯이, **배열에 객체를 순차적으로 저장할 때와 객체를 마지막에 저장된 것부터 삭제하면** 
 **System.arraycopy()를 호출하지 않기 때문에 작업시간이 짧지만, 배열의 중간에 위치한 객체를 추가하거나 삭제하는 경우 System.arraycopy()를 호출해서 다른 데이터의 위치를 이동시켜 줘야 하기 때문에 다루는 데이터의 개수가 많을수록 작업시간이 오래 걸린다.**  
 
-<br>
+<br><br>
 
 ### LinkedList  
 배열은 가장 기본적인 형태의 자료구조로 구조가 간단하며 사용하기 쉽고 데이터를 읽어오는데 걸리는 시간(접슨 시간)이 가장 빠르다는 장점을 가지고 있지만 다음과 같은 단점도 가지고 있다.  
@@ -283,7 +284,7 @@ ArrayList와 LinkedList의 성능차이는 다음과 같다.
 |ArrayList|빠르다|느리다| 순차적인 추가/삭제는 더 빠름<br>비효율적인 메모리 사용 |
 |LinkedList|느리다|빠르다| 데이터가 많을수록 접근성이 떨어짐               |
 
-<br>
+<br><br>
 
 ### Stack과 Queue  
 스택은 마지막에 저장한 데이터를 가장 먼저 꺼내게 되는 LIFO(Last In First Out) 구조로 되어 있고, 
@@ -346,5 +347,65 @@ public static void main(String[] args){
 
 자바에서는 스택을 Stack 클래스로 구현하여 제공하고 있지만 
 큐는 Queue 인터페이스로 정의해 놓았을 뿐 별도의 클래스를 제공하고 있지 않다. 
-대신 Queue 인터페이스를 구현한 클래스들이 있어서 이 들 중의 하나를 선택해서 사용하면 된다.  
+대신 Queue 인터페이스를 구현한 클래스들이 있어서 이 들 중의 하나를 선택해서 사용하면 된다.   
+
+Queue를 구현한 클래스들은 대표적으로 ArrayDeque, LinkedList, PriorityQueue 등이 있다.  
+각 클래스들은 Queue 인터페이스에 정의된 메서드를 모두 작성해 놓았으면, 대부분 거의 같은 기능을 한다. 
+
+- PriorityQueue
+  - Queue 인터페이스의 구현체 중의 하나로, 저장한 순서에 관계없이 우선순위가 높은 것부터 꺼내게 된다는 특징이 있다. 
+  - null은 저장할 수 없다. null을 저장하면 NullPointerException이 발생한다.  
+  - 저장공간으로 배열을 사용하면, 각 요소를 '힙(heap)'이라는 자료구조의 형태로 저장한다. 힙은 이진 트리의 한 종류로 가장 큰 값이나 가장 작은 값을 빠르게 찾을 수 있다는 특징이 있다.  
+- Deque(Double-Ended Queue)  
+  - Queue의 변형으로, 한 쪽 끝으로만 추가/삭제할 수 있는 Queue와 달리, Deque는 양쪽 끝에 추가/사게가 가능하다.  
+  - Deque의 조상은 Queue이며, 구현체로는 ArrayDeque와 LinkedList 등이 있다. 
+  - Deque은 스택과 큐를 하나로 합쳐놓은 것과 같으며 스택으로 사용할 수도 있고, 큐로 사용할 수도 있다.  
+    
+      |Deque|Queue|Stack|
+      |:---:|:---:|:---:|
+      |offerLast()|offer()|push()|
+      |pollLast()|-|pop()|
+      |pollFirst()|poll()|-|
+      |peekFirst()|peek()|-|
+      |peekLast()|-|peek()|
+    <br>
+   <img width="1096" alt="스크린샷 2023-02-05 오후 8 37 27" src="https://user-images.githubusercontent.com/54930365/216816475-c626212c-faca-4ed3-806d-bc897e1af946.png">
+
+
+<br>
+
+```text
+스택의 활용 예 - 수식 계산, 수식괄호검사, 워드프로세서의 undo/redo, 웹브라우저의 뒤로/앞으로  
+큐의 활용 예 - 최근사용문서, 인쇄작업 대기목록, 버퍼(buffer)  
+```
+
+<br><br>  
+
+### Iterator, ListIterator, Enumeration  
+Iterator, Listiterator, Enumeration은 모두 컬렉션에 저장된 요소를 접근하는데 사용되는 인터페이스이다.  
+Enumeration은 Iterator의 구버전이며, ListIterator는 Iterator의 기능을 향상시킨 것이다.  
+
+<br>
+
+#### 1. Iterator  
+컬렉션 프레임웍에서는 컬렉션에 저장된 요소들을 읽어오는 방법을 표준화하였다. 
+컬렉션에 저장된 각 요소에 접근하는 기능을 가진 Iterator 인터페이스를 정의하고, Collection 인터페이스에는 'Iterator(Iterator를 구현한 클래스의 인스턴스)'를 반환하는 iterator()를 정의하고 있다.  
+컬렉션 클래스에 대해 iterator()를 호출하여 Iterator를 얻은 다음 반복문, 주로 while문을 사용해서 컬렉션 클래스의 요소들을 읽어올 수 있다.  
+
+- boolean hasNext(): 읽어 올 요소가 남아있는지 확인한다. 있으면 true, 없으면 false를 반환한다.  
+- Object next(): 다음 요소를 읽어 온다. next()를 호출하기 전에 hasNext()를 호출해서 읽어 올 요소가 있는지 확인하는 것이 안전하다.  
+- void remove(): next()로 읽어온 요소를 삭제한다. next()를 호출한 다음에 remove()를 호출해야한다. (선택적 기능)  
+
+Iterator를 이용해서 컬렉션의 요소를 읽어오는 방법을 표준화했기 떄문에 이처럼 코드의 재사용성을 높이는 것이 가능하다.  
+참조변수의 타입을 Collection 타입으로 두는 것이 좋다. 그 이유는 만일 Collection 인터페이스를 구현한 다른 클래스로 바ㅜ꺼야 한다면 선언문 하나만 변경하면 나머지 코드는 검토하지 않아도 되기 때문이다.  
+
+Map 인터페이스를 구현한 컬렉션 클래스는 키와 값을 쌍으로 저장하고 있기 때문에 iterator()를 직접 호출할 수 없고, 그 대신 keySet()이나 entrySet()과 같은 메서드를 통해서 키와 값을 각각 따로 Set의 형태로 얻어 온 후에 다시 Iterator()를 호출해야 Iterator를 얻을 수 있다.  
+```java
+Map map = new HashMap();
+        ...
+Iterator it = map.entrySet().iterator();
+```
+
+
+
 
