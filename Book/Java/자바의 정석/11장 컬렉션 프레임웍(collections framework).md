@@ -294,7 +294,7 @@ ArrayList와 LinkedList의 성능차이는 다음과 같다.
 큐는 ArrayList보다 데이터의 추가/삭제가 쉬운 LinkedList로 구현하는 것이 적합하다.  
 
 Stack의 메서드는 다음과 같다.  
-- boolean empty(): Stacok이 비어있는지 알려준다.  
+- boolean empty(): Stack이 비어있는지 알려준다.  
 - Object peek(): Stack의 맨 위에 저장된 객체를 반환. pop()과 달리 Stack에서 객체를 꺼내지는 않음.(비어있을 때는 EmptyStackException 발생)  
 - Object pop(): Stack의 맨 위에 저장되는 객체를 꺼낸다. (비어있을 때는 EmptyStackException 발생)  
 - Object push(Object item): Stack에 객체(item)를 저장한다.
@@ -347,7 +347,7 @@ public static void main(String[] args){
 
 자바에서는 스택을 Stack 클래스로 구현하여 제공하고 있지만 
 큐는 Queue 인터페이스로 정의해 놓았을 뿐 별도의 클래스를 제공하고 있지 않다. 
-대신 Queue 인터페이스를 구현한 클래스들이 있어서 이 들 중의 하나를 선택해서 사용하면 된다.   
+대신 Queue 인터페이스를 구현한 클래스들이 있어서 이들 중의 하나를 선택해서 사용하면 된다.   
 
 Queue를 구현한 클래스들은 대표적으로 ArrayDeque, LinkedList, PriorityQueue 등이 있다.  
 각 클래스들은 Queue 인터페이스에 정의된 메서드를 모두 작성해 놓았으면, 대부분 거의 같은 기능을 한다. 
@@ -355,9 +355,9 @@ Queue를 구현한 클래스들은 대표적으로 ArrayDeque, LinkedList, Prior
 - PriorityQueue
   - Queue 인터페이스의 구현체 중의 하나로, 저장한 순서에 관계없이 우선순위가 높은 것부터 꺼내게 된다는 특징이 있다. 
   - null은 저장할 수 없다. null을 저장하면 NullPointerException이 발생한다.  
-  - 저장공간으로 배열을 사용하면, 각 요소를 '힙(heap)'이라는 자료구조의 형태로 저장한다. 힙은 이진 트리의 한 종류로 가장 큰 값이나 가장 작은 값을 빠르게 찾을 수 있다는 특징이 있다.  
+  - 저장공간으로 배열을 사용하며, 각 요소를 '힙(heap)'이라는 자료구조의 형태로 저장한다. 힙은 이진 트리의 한 종류로 가장 큰 값이나 가장 작은 값을 빠르게 찾을 수 있다는 특징이 있다.  
 - Deque(Double-Ended Queue)  
-  - Queue의 변형으로, 한 쪽 끝으로만 추가/삭제할 수 있는 Queue와 달리, Deque는 양쪽 끝에 추가/사게가 가능하다.  
+  - Queue의 변형으로, 한 쪽 끝으로만 추가/삭제할 수 있는 Queue와 달리, Deque는 양쪽 끝에 추가/삭제가 가능하다.  
   - Deque의 조상은 Queue이며, 구현체로는 ArrayDeque와 LinkedList 등이 있다. 
   - Deque은 스택과 큐를 하나로 합쳐놓은 것과 같으며 스택으로 사용할 수도 있고, 큐로 사용할 수도 있다.  
     
