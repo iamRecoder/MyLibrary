@@ -268,7 +268,7 @@ LinkedList의 생성자와 메서드는 다음과 같다.
 
 <br>
 
-LinkedList 역시 List 인터페이스를 구현했기 떄문에 ArrayLust와 내부구현방법만 다를 뿐 제공하는 메서드의 종류와 기능은 거의 같다.  
+LinkedList 역시 List 인터페이스를 구현했기 떄문에 ArrayList와 내부구현방법만 다를 뿐 제공하는 메서드의 종류와 기능은 거의 같다.  
 ArrayList와 LinkedList의 성능차이는 다음과 같다.  
 
 1. **순차적으로 추가/삭제하는 경우에는 ArrayList가 LinkedList보다 빠르다.**  
@@ -397,7 +397,7 @@ Enumeration은 Iterator의 구버전이며, ListIterator는 Iterator의 기능�
 - void remove(): next()로 읽어온 요소를 삭제한다. next()를 호출한 다음에 remove()를 호출해야한다. (선택적 기능)  
 
 Iterator를 이용해서 컬렉션의 요소를 읽어오는 방법을 표준화했기 떄문에 이처럼 코드의 재사용성을 높이는 것이 가능하다.  
-참조변수의 타입을 Collection 타입으로 두는 것이 좋다. 그 이유는 만일 Collection 인터페이스를 구현한 다른 클래스로 바ㅜ꺼야 한다면 선언문 하나만 변경하면 나머지 코드는 검토하지 않아도 되기 때문이다.  
+참조변수의 타입을 Collection 타입으로 두는 것이 좋다. 그 이유는 만일 Collection 인터페이스를 구현한 다른 클래스로 바꿔야 한다면 선언문 하나만 변경하면 나머지 코드는 검토하지 않아도 되기 때문이다.  
 
 Map 인터페이스를 구현한 컬렉션 클래스는 키와 값을 쌍으로 저장하고 있기 때문에 iterator()를 직접 호출할 수 없고, 그 대신 keySet()이나 entrySet()과 같은 메서드를 통해서 키와 값을 각각 따로 Set의 형태로 얻어 온 후에 다시 Iterator()를 호출해야 Iterator를 얻을 수 있다.  
 ```java
@@ -405,6 +405,267 @@ Map map = new HashMap();
         ...
 Iterator it = map.entrySet().iterator();
 ```
+
+<br>
+List 클래스들은 저장순서를 유지하기 때문에 Iterator를 이용해서 읽어 온 결과 역시 저장 순서와 동일하지만 Set 클래스들은 각 요소간의 
+순서가 유지되지 않기 때문에 Iterator를 이용해서 저장된 요소들을 읽어 와도 처음에 저장된 순서와 같지 않다.  
+
+<br>
+
+#### 2. ListIterator와 Enumeration  
+Enumeration은 컬렉션 프레임워크가 만들어지기 이전에 사용하던 것으로 Iterator의 구버전이라고 생각하면 된다. 
+이전 버전으로 작성된 소스와의 호환을 위해서 남겨두고 있을 뿐이므로 가능하면 Enumeration 대신 Iterator를 사용하자.  
+
+ListIterator는 Iterator를 상속받아서 기능을 추가한 것으로, 컬렉션의 요소에 접근할 때 Iterator는 단방향으로만 이동할 수 있는 데 반해 
+ListIterator는 양방향으로 이동이 가능하다. 
+다만 ArrayList나 LinkedList와 같이 List 인터페이스를 구현한 컬렉션에서만 사용할 수 있다.   
+- Enumeration: Iterator의 구버전
+- ListIterator: Iterator에 양방향 조회기능 추가 (List를 구현한 경우만 사용 가능)  
+
+<br>
+
+Enumeration의 메서드는 다음과 같다.  
+- boolean hasMoreElements(): 읽어 올 요소가 남아있는지 확인한다. 있으면 true, 없으면 false를 반환한다. Iterator의 hasNext()와 같다.  
+- Object nextElement(): 다음 요소를 읽어 온다. nextElement()를 호출하기 전에 hasMoreElements()를 호출해서 읽어올 요소가 남아있는지 확인하는 것이 안전하다. Iterator의 next()와 같다.  
+
+
+ListIterator의 메서드는 다음과 같다.  
+- void add(Object o): 컬렉션에 새로운 객체를 추가한다. (선택적 기능)
+- boolean hasNext(): 읽어올 다음 요소가 남아있는지 확인한다. 있으면 true, 없으면 false를 반환
+- boolean hasPrevious(): 읽어올 이전 요소가 남아있는지 확인한다. 있으면 true, 없으면 false를 반환
+- Object next(): 다음 요소를 읽어 온다. next()를 호출하기 전에 hasNext()를 호출해서 읽어올 요소가 있는지 확인하는 것이 안전하다.  
+- Object previous(): 이전 요소를 읽어 온다. previous()를 호출하기 전에 hasPrevious()를 호출해서 읽어 올 요소가 있는지 확인하는 것이 안전하다.  
+- int nextIndex(): 다음 요소의 index를 반환한다.
+- int previousIndex)(): 이전 요소의 index를 반환한다.
+- void remove(): next() 또는 previous()로 읽어 온 요소를 삭제한다. 반드시 next()나 previous()를 먼저 호출한 다음에 이 메서드를 호출해야한다. (선택적 기능)
+- void set(Object o): next() 또는 previous()로 읽어 온 요소를 지정된 객체로 변경한다. 반드시 next()나 previous()를 먼저 호출한 다음에 이 메서드를 호출해야한다. (선택적 기능)
+
+선택적 기능이라고 표시된 메서드들은 반드시 구현하지 않아도 된다. 그렇다하더라도 인터페이스로부터 상속받은 메서드는 추상메서드차 메서드의 몸통을 반드시 만들어 주어여 하므로 다음과 같이 처리한다.  
+```java
+// 선택적 기능인 remove() 메서드의 몸통 예시
+public void remove() {
+    throw new UnsupportedOperationException();
+}
+```
+단순히 public void remove() {};와 같이 구현하는 것보다 이처럼 예외를 던져서 구현되지 않은 기능이라는 것을 메서드를 호출하는 쪽에 알리는 것이 좋다.  
+remove 메서드를 지원하지 않는 Iterator는 UnsupportedOperationException을 발생시킨다. 
+remove 메서드의 선언부에서 예외처리를 하지 않는 이유는 UnsupportedOperationException이 RuntimeException의 자손이기 때문이다.  
+
+<br><br>
+
+### Arrays  
+Arrays 클래스에는 배열을 다루는데 유용한 메서드가 정의되어 있다. 
+같은 기능의 메서드가 배열의 타입만 다르게 오버로딩되어 있어서 많아 보이지만, 실제로는 그리 많지 않다.  
+<br>
+
+#### toString()
+모든 기본형 배열과 참조형 배열 별로 하나씩 toString()이 정의되어 있다.  
+<br>
+
+#### 배열의 복사 - copyOf(), copyOfRange()  
+copyOf()는 배열 전체를, copyOfRange()는 배열의 일부를 복사해서 새로운 배열을 만들어 반환한다.   
+```java
+int arr = [0,1,2,3,4];
+int arr2 = Arrays.copyOf(arr, arr.length);  // arr2 = [0,1,2,3,4]
+int arr3 = Arrays.copyOf(arr, 3);           // arr3 = [0,1,2]
+int arr4 = Arrays.copyOfRange(arr, 2, 4);   // arr4 = [2,3]
+```
+<br>
+
+#### 배열 채우기 - fill(), setAll()
+fill()은 배열의 모든 요소를 지정된 값으로 채운다. setAll()은 배열을 채우는데 사용할 함수형 인터페이스를 매개변수로 받는다. 
+setAll()을 호출할 때는 함수형 인터페이스를 구현한 객체를 매개변수로 지정하던가 아니면 람다식을 지정해야한다.  
+```java
+int[] arr = new int[5];
+Arrays.fill(arr, 9);    // arr = [9,9,9,9,9]
+Arrays.setAll(arr, () -> (int) (Math.random()*5)+1);    // arr = [1,5,2,1,1]
+```
+<br>
+
+#### 배열의 정렬과 검색 - sort(), binarySearch()  
+sort()는 배열을 정렬할 때, 그리고 배열에 저장된 요소를 검색할 때는 binarySearch()를 사용한다. 
+binarySearch()는 배열에서 지정된 값이 저장된 위치를 찾아서 반환하는데, 반드시 배열이 정렬된 상태이어야 올바른 결과를 얻는다. 
+그리고 만일 검색한 값과 일치하는 요소들이 여러 개 있다면, 이 중에서 어떤 것의 위치가 반환될지는 알 수 없다.  
+```java
+int[] arr = {3, 2, 0, 1, 4};
+int idx = Arrays.binarySearch(arr, 2);      // idx=-5, 잘못된 결과
+
+Arrays.sort(arr);   // 배열 arr을 정렬한다. 
+System.out.println(Arrays.toString(arr));   // [0, 1, 2, 3, 4]
+int idx = Arrays.binarySearch(arr, 2);       // idx = 2, 올바른 결과
+```
+이진 검색은 배열의 검색할 범위를 반복적으로 절반씩 줄여가면서 검색하기 때문에 검색 속도가 상당히 빠르다. 
+단, 배열이 정렬되어 있는 경우에만 사용할 수 있다는 단점이 있다.  
+<br>
+
+#### 배열의 비교와 출력 - equals(), toString()  
+toString()은 배열의 모든 요소를 문자열로 편하게 출력할 수 있다. 
+toString()은 일차원 배열에서만 사용할 수 있으므로, 다차원 배열에는 deepToString()을 사용해야 한다. 
+deepToString()은 배열의 모든 요소를 재귀적으로 접근해서 문자열을 구성하므로 2차원뿐만 아니라 3차원 이상의 배열에도 동작한다.  
+
+equals()는 두 배열에 저장된 모든 요소를 비교해서 같으면 true, 다르면 false를 반환한다. 
+equals()도 일차원 배열에만 사용가능하므로, 다차원 배열의 비교에는 deepEquals()를 사용해야 한다.  
+다차원 배열은 '배열의 배열'의 형태로 구성하기 때문에 equals()로 비교하면, 문자열을 비교하는 것이 아니라 '배열에 저장된 배열의 주소'를 기뵤하게 된다. 
+서로 다른 배열은 항상 주소가 다르므로 false를 결과로 얻는다.  
+<br>
+
+#### 배열을 List로 변환 - asList(Object... a)  
+asList()는 배열을 List에 담아서 반환한다. 
+매개변수 타입이 가변인수라서 배열 생성 없이 저장할 요소들만 나열하는 것도 가능하다.  
+한 가지 주의할 점은 asList()가 반환한 List의 크기를 변경할 수 없다는 것이다. 즉, 추가 또는 삭제가 불가능하다. 
+저장된 내용은 변경가능하다. 만일 크기를 변경할 수 있는 List가 필요하다면 다음과 같이 하면 된다.  
+```java
+List list = new ArrayList(Arrays.asList(1,2,3,4,5));
+```
+<br>
+
+#### parallelXXX(), spliterator(), stream()  
+이 외에도 'parallel'로 시작하는 이름의 메서드들이 있는데, 이 메서드들은 보다 빠른 결과를 얻기 위해 여러 쓰레드가 작업을 나누어 처리하도록 한다. 
+spliterator()는 여러 쓰레드가 처리할 수 있게 하나의 작업을 여러 작업으로 나누는 Spliterator를 반환하며, stream()은 컬렉션을 스트림으로 변환한다.  
+
+<br><br>
+
+### Comparator와 Comparable  
+Arrays.sort()를 호출만 하면 컴퓨터가 알아서 배열을 정렬하는 것처럼 보이지만, 사실은 Character 클래스의 Comparpable의 구현에 의해 정렬되었던 것이다.  
+Comparator와 Comparable은 모두 인터페이스로 컬렉션을 정렬하는데 필요한 메서드를 정의하고 있으며, Comparable을 구현하고 있는 클래스들은 같은 타입의 인스턴스끼리 서로 비교할 수 있는 클래스들, 주로 Integer와 같은 wrapper 클래스와 String, Data, File과 같은 것들이며 기본적으로 오름차순, 
+즉 작은 값에서부터 큰 값의 순으로 정렬되도록 구현되어 있다. 
+그래서 Comparable을 구현한 클래스는 정렬이 가능하다는 것을 의미한다.  
+
+Comparator와 Comparable의 실제 소스는 다음과 같다.  
+```java
+public interface Comparator {
+    int compare(Object o1, Object o2);
+    boolean equals(Object obj);
+}
+public interface Comparable {
+    public int compareTo(Object o);
+}
+```
+compare()와 compareTo()는 선언형태와 이름이 약간 다를 뿐 두 객체를 비교한다는 같은 기능을 목적으로 고안된 것이다. 
+compareTo()의 반환값은 int이지만 실제로는 비교하는 두 객체가 같으면 0, 비교하는 값보다 작으면 음수, 크면 양수를 반환하도록 구현해야 한다. 
+이와 마찬가지로 compare()도 객체를 비교해서 음수, 0, 양수 중의 하나를 반환하도록 구현해야 한다.  
+
+equals 메서드는 모든 클래스가 가지고 있는 공통적인 메서드이지만, Comparator를 구현하는 클래스는 오버라이딩이 필요할 수도 있다는 것을 알리기 위해서 정의한 것일 뿐, 그냥 compare(Object o1, Object o2)만 구현하면 된다.  
+
+Comparable을 구현한 클래스들이 기본적으로 오름차순으로 정렬되어 있지만, 다른 기준에 의해서 정렬되도록 하고 싶을 때 Comparator를 구현해서 정렬기준을 제공할 수 있다.  
+- **Comparable: 기본 정렬기준을 구현하는데 사용**
+- **Comparator: 기본 정렬기준 외에 다른 기준으로 정렬하고자할 때 사용**  
+
+```java
+// Comparator와 Comparable 사용 예제
+import java.util.*;
+
+class ComparatorEx {
+    public static void main(String[] args){
+        String[] strArr = {"cat", "Dog", "lion", "tiger"};
+        
+        Arrays.sort(strArr);                // String의 Comparable 구현에 의한 정렬
+        Arrays.sort(str, String.CASE_INSENSITIVE_ORDER);    // 대소문자 구분 안함
+        Arrays.sort(str,new Descending());  // 역순 정렬
+    }
+}
+
+class Descending implements Comparator {
+    public int compare(Object o1, Object o2) {
+        if (o1 instanceof Comparable && o2 instanceof Comparable) {
+            Comparable c1 = (Comparable) o1;
+            Comparable c2 = (Comparable) o2;
+            return c1.compareTo(c2) * -1;   // -1을 곱해서 기본 정렬방식의 역으로 변경한다.
+        }
+        return -1;
+    }    
+}
+```
+
+전에 배운 것과 같이, Arrays.sort()는 배열을 정렬할 때, Comprator를 지정해주지 않으면 
+저장하는 객체(주로 Comparable을 구현한 클래스의 객체)에 구현된 내용에 따라 결정된다.  
+
+- **static void sort(Object[] a) : 객체 배열에 저장된 객체가 구현한 Comparable에 의한 정렬**
+- **static void sort(Object[] a, Comparator c) : 지정한 Comparator에 의한 정렬** 
+
+String의 Comprable 구현은 문자열이 사전 순으로 정렬되도록 작성되어 있다. 
+문자열의 오름차순 정렬은 공백, 숫자, 대문자, 소문자의 순으로 정렬되는 것을 의미하다. 
+정확히 얘기하면 문자의 유니코드의 순서가 작은 값에서부터 큰 값으로 정렬되는 것이다.  
+그리고 대소문자를 구분하지 않고 비교하는 Comparator를 상수 형태인 `String.CASE_INSENSITIVE_ORDER`로 제공한다.  
+
+String의 기본 정렬을 반대로 하는 것, 즉 문자열의 내림차순을 구현하는 것은 아주 간단하다. 
+단지 String에 구현된 compareTo()의 결과에 -1을 곱하기만하면 된다.  
+```java
+class Descending implements Comparator {
+    public int compare(Object o1, Object o2) {
+        if (o1 instanceof Comparable && o2 instanceof Comparable) {
+            Comparable c1 = (Comparable) o1;
+            Comparable c2 = (Comparable) o2;
+            return c1.compareTo(c2) * -1;   // -1을 곱해서 기본 정렬방식의 역으로 변경한다.
+        }
+        return -1;
+    }    
+}
+```
+
+<br><br>
+
+### HashSet  
+HashSet은 Set 인터페이스를 구현한 가장 대표적인 컬렉션이며, Set 인터페이스의 특징대로 HashSet은 중복된 요소를 저장하지 않는다.  
+HashSet은 저장순서를 유지하지 않으므로 저장순서를 유지하고자 한다면 LinkedHashSet을 사용해야한다.   
+
+HashSet은 내부적으로 HashMap을 이용해서 만들어졌으며, HashSet이란 이름은 해싱(hashing)을 사용해서 구현했기 때문에 붙여진 것이다.  
+
+HashSet의 생성자 또는 메서드는 다음과 같다.  
+- HashSet(): HashSet 객체를 생성한다.
+- HashSet(Collection c): 주어진 컬렉션을 포함하는 HashSet 객체를 생성한다.  
+- HashSet(int initialCapacity): 주어진 값을 초기용량으로 하는 HashSet 객체를 생성한다.
+- HashSet(int initialCapacity, float loadFactor): 초기용량과 load factor를 지정하는 생성자.
+- boolean add(Object o): 새로운 객체를 저장한다.
+- boolean addAll(Collection c): 주어진 컬렉션에 저장된 모든 객체들을 추가한다. (합집합)  
+- void clear(): 저장된 모든 객체를 삭제한다.
+- Object clone(): HashSet을 복제해서 반환한다. (얕은 복사)  
+- boolean contains(Object o): 지정된 객체를 포함하고 있는지 알려준다.  
+- boolean containsAll(Collection c): 주어진 컬렉션에 저장된 모든 객체들을 포함하고 있는지 알려준다.  
+- boolean isEmpty(): HashSet이 비어있는지 알려준다.  
+- Iterator iterator(): Iterator를 반환한다.
+- boolean remove(Object o): 지정된 객체를 HashSet에서 삭제한다. (성공하면 true, 실패하면 false)  
+- boolean removeAll(Collection c): 주어진 컬렉션에 저장된 모든 객체와 동일한 것들을 HashSet에서 모두 삭제한다. (차집합) 
+- boolean retainAll(Collection c): 주어진 컬렉션에 저장된 객체와 동일한 것만 남기고 삭제한다. (교집합)  
+- int size(): 저장된 객체의 개수를 반환한다.
+- Object[] toArray(): 저장된 객체들을 객체배열의 형태로 반환한다.
+- Object[] toArray(Object[] a): 저장된 객체들을 주어진 객체배열(a)에 담는다.  
+
+HashSet의 메서드를 호출하는 것만으로도 간단하게 합집합(addAll), 교집합(retainAll), 차집합(removeAll)을 구할 수 있다.   
+<br>
+
+HashSet에 클래스의 인스턴스를 새로운 요소로 추가할 경우, 두 인스턴스가 같은 것으로 인식하게 하려면 어떻게 해야 할까?  
+HashSet의 add 메서드는 새로운 요소를 추가하기 전에 기존에 저장된 요소와 같은 것인지 판별하기 위해 추가하려는 요소의 equals()와 hashCode()를 호출하기 때문에 
+equals()와 hashCode()를 목적에 맞게 오버라이딩해야 한다.  
+```java
+// equals()와 hashCode() 오버라이딩 예시
+public boolean equals(Object o){
+    if (obj instanceof Person2) {
+        Person2 tmp = (Person2) obj;
+        return name.equals(tmp.name) && age == tmp.age;
+    }
+}
+
+public int hashCode(){
+    return Objects.hash(name, age);     // JDK1.8부터 Objects 클래스의 hash 메서드가 추가되었다.
+//    return (name+age).hashCode();     // JDK1.8이전 버전에서는 이처럼 String 클래스의 hashCode()를 활용하여 간단하게 처리할 수 있다.
+}
+```
+오버라이딩을 통해 작성된 hashCode()는 다음의 세 가지 조건을 만족시켜야 한다.  
+1. **실행 중인 애플리케이션 내의 동일한 객체에 대해서 여러 번 hashCode()를 호출해도 동일한 int 값을 반환해야한다. 하지만 실행시마다 동일한 int값을 반환할 필요는 없다.**
+   1. String 클래스는 문자열의 내용으로 해시코드를 만들어 내기 때문에 내용이 같은 문자열에 대한 hashCode() 호출은 항상 동일한 해시코드를 반환한다. 반면에 Object 클래스는 객체의 주소로 해시코드를 만들어 내기 때문에 실행할 때마다 해시코드값이 달라질 수 있다.  
+2. **equals 메서드를 이용한 비교에 의해서 true를 얻은 두 객체에 대해 각각 hashCode()를 호출해서 얻은 결과는 반드시 같아야 한다.**
+3. **equals 메서드를 호출했을 때 false를 반환하는 두 객체는 hashCode() 호출에 대해 같은 int를 반환하는 경우가 있어도 괜찮지만, 해싱(hashing)을 사용하는 컬렉션의 성능을 향상시키기 위해서는 다른 int 값을 반환하는 것이 좋다.**  
+   1. 서로 다른 객체에 대해서 해시코드값이 중복되는 경우가 많아질수록 해싱을 사용하는 Hashtable, HashMap과 같은 컬렉션의 검색속도가 떨어진다.  
+   2. 두 객체에 대해 equals 메서드를 호출한 결과가 true이면, 두 객체의 해시코드는 반드시 같아야하지만, 두 객체의 해시코드가 같다고 해서 equals 메서드의 호출결과가 반드시 true여야 하는 것은 아니다.  
+
+<br>
+
+사용자정의 클래스를 작성할 때 equals 메서드를 오버라이딩해야 한다면 hashCode()도 클래스의 작성의도와 맞게 오버라이딩하는 것이 원칙이지만, 
+경우에 따라 위의 예제처럼 간단히 구현하거나 생략해도 별 문제가 되지 않으므로 hashCode()를 구현하는데 너무 부담을 갖지 않아도 된다.  
+
+<br><br>
+
 
 
 
