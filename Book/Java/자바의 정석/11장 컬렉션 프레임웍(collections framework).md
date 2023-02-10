@@ -606,8 +606,8 @@ class Descending implements Comparator {
 <br><br>
 
 ### HashSet  
-HashSet은 Set 인터페이스를 구현한 가장 대표적인 컬렉션이며, Set 인터페이스의 특징대로 HashSet은 중복된 요소를 저장하지 않는다.  
-HashSet은 저장순서를 유지하지 않으므로 저장순서를 유지하고자 한다면 LinkedHashSet을 사용해야한다.   
+HashSet은 Set 인터페이스를 구현한 가장 대표적인 컬렉션이며, Set 인터페이스의 특징대로 **HashSet은 중복된 요소를 저장하지 않는다.**  
+**HashSet은 저장순서를 유지하지 않으므로 저장순서를 유지하고자 한다면 LinkedHashSet을 사용해야한다.**   
 
 HashSet은 내부적으로 HashMap을 이용해서 만들어졌으며, HashSet이란 이름은 해싱(hashing)을 사용해서 구현했기 때문에 붙여진 것이다.  
 
@@ -663,6 +663,146 @@ public int hashCode(){
 
 사용자정의 클래스를 작성할 때 equals 메서드를 오버라이딩해야 한다면 hashCode()도 클래스의 작성의도와 맞게 오버라이딩하는 것이 원칙이지만, 
 경우에 따라 위의 예제처럼 간단히 구현하거나 생략해도 별 문제가 되지 않으므로 hashCode()를 구현하는데 너무 부담을 갖지 않아도 된다.  
+
+<br><br>
+
+### TreeSet  
+TreeSet은 `이진 검색 트리(binary search tree)라는 자료구조의 형태로 데이터를 저장하는 컬렉션 클래스`이다.  
+이진 검색 트리는 정렬, 검색, 범위검색에 높은 성능을 보이는 자료구조이며 
+TreeSet은 이진 검색 트리의 성능을 향상시킨 **'레드-블랙 트리'**로 구현되어 있다.  
+그리고 Set 인터페이스를 구현했으므로 중복된 **데이터의 저장을 허용하지 않으며 정렬된 위치에 저장하므로 저장순서를 유지하지도 않는다.**  
+
+이진 검색 트리는 부모노드의 왼쪽에는 부모노드의 값보다 작은 자식노드를 오른쪽에는 큰 값의 자식노드를 저장하는 이진 트리이다.  
+TreeSet에 저장되는 객체가 Comparable을 구현하던가 아니면 TreeSet에게 Comparator를 제공해서 두 객체를 비교할 방법을 알려줘야 한다. 
+그렇지 않으면 TreeSet에 객체를 저장할 때 예외가 발생한다.  
+
+왼쪽 마지막 값에서부터 오른쪽 값까지 값을 '왼쪽 노드 -> 부모 노드 -> 오른쪽 노드' 순으로 읽어오면 오름차순으로 정렬된 순서를 얻을 수 있다.  
+TreeSet은 이처럼 정렬된 상태를 유지하기 때문에 단일 값 검색과 범위검색이 매우 빠르다.  
+
+> #### 이진 검색 트리는 
+> - 모든 노드는 **최대 두 개의 자식노드**를 가질 수 있다.
+> - 왼쪽 자식노드의 값은 부모노드의 값보다 작고 오른쪽 자식노드의 값은 부모노드의 값보다 커야한다.
+> - 노드의 추가/삭제에 시간이 걸린다. (순차적으로 저장하지이 아니라 저장위치를 찾아서 저장해야하고 삭제하는 경우 트리의 일부를 재구성해야하기 때문)
+> - **검색(범위검색)과 정렬에 유리하다.**
+> - **중복된 값을 저장하지 못한다.**
+
+<br>
+
+TreeSet의 생성자 또는 메서드는 다음과 같다.  
+- TreeSet(): 기본 생성자
+- TreeSet(Collection c): 주어진 컬렉션을 저장하는 TreeSet을 생성
+- TreeSet(SortedSet c): 주어진 SortedSet을 구현한 컬렉션을 저장하는 TreeSet을 생성
+- boolean add(Object o): 지정된 객체를 TreeSet에 추가
+- boolean addAll(Collection c): 주어진 컬렉션의 객체들을 TreeSet에 추가
+- Object ceiling(Object o): 지정된 객체와 같은 객체를 반환. 없으면 큰 값을 가진 객체 중 제일 가까운 값의 객체를 반환. 없으면 null
+- void clear(): 저장된 모든 객체를 삭제한다.
+- Comparator comparator(): TreeSet을 복제하여 반환한다.
+- boolean contains(Object o): 지정된 객체가 포함되어 있는지 확인한다.
+- boolean containsAll(Collection c): 지정된 Collection의 객체들이 포함되어 있는지 확인한다.
+- NavigableSet descendingSet(): TreeSet에 저장된 요소들을 역순으로 정렬해서 반환한다.
+- Object first(): 정렬된 순서에서 첫 번째 객체를 반환한다.
+- Object floor(Object o): 지정된 객체와 같은 객체를 반환한다. 없으면 작은 값을 가진 객체 중 제일 가까운 값의 객체를 반환한다. 없으면 null  
+- SortedSet headSet(Object toElement): 지정된 객체보다 작은 값의 객체들을 반환한다.
+- NavegableSet headSet(Object toElement, boolean inclusive): 지정된 객체보다 작은 값의 객체들을 반환한다. inclusive가 true이면, 같은 값의 객체도 포함한다.
+- Object higher(Object o): 지정된 객체보다 큰 값을 가진 객체 중 제일 가까운 값의 객체를 반환한다. 없으면 null
+- boolean isEmpty(): TreeSet이 비어있는지 확인한다.
+- Iterator iterator(): TreeSet의 Iterator를 반환한다.
+- Object last(): 정렬된 순서에서 마지막 객체를 반환한다.
+- Object lower(Object o): 지정된 객체보다 작은 값을 가진 객체 중 제일 가까운 값의 객체를 반환한다. 없으면 null
+- Object pollFirst(): TreeSet의 첫번째 요소(제일 작은 값의 객체)를 반환한다.
+- Object pollLast(): TreeSet의 마지막 번째 요소(제일 큰 값의 객체)를 반환한다.
+- boolean remove(Object o): 지정된 객체를 삭제한다.
+- boolean retainAll(Collection c): 주어진 컬렉션과 공통된 요소만을 남기고 삭제한다. (교집합)  
+- int size(): 저장된 객체의 개수를 반환한다.
+- Spliterator spliterator(): TreeSet의 spliterator를 반환한다.
+- SortedSet subSet(Object fromElement, Object toElement): 범위검색(fromElement와 toElement 사이)의 결과를 반환한다. (끝 범위인 toElement는 범위에 포함되지 않음)  
+- Navigable<E> subSet(E fromElement, boolean fromInclusive, E toElement, boolean toInclusive): 범위 검색의 결과를 반환한다. (fromInclusive가 true이면 시작값이 포함되고, toInclusive가 true이면 끝값이 포함된다.)  
+- SortedSet tailSet(Object fromElement): 지정된 객체보다 큰 값의 객체들을 반환한다.
+- Object[] toArray(): 저장된 객체를 객체배열로 반환한다.
+- Object[] toArray(Object[] a): 저장된 객체를 주어진 객체배열에 저장하여 반환한다.  
+
+<br>
+문자열의 경우 정렬순서는 문자의 코드값이 되므로, 오름차순 정렬의 경우 코드값의 크기가 작은 순서에서 큰 순서, 
+즉 공백, 숫자, 대문자, 소문자 순으로 정렬되고 내림차순의 경우 그 반대가 된다.  
+그래서 가능하면 대문자 또는 소문자로 통일해서 저장하는 것이 좋으며 다른 방식으로 정렬해야하는 경우 Comparator를 이용하면 된다.  
+
+<br><br>
+
+### HashMap과 Hashtable  
+Hashtable과 HashMap의 관계는 Vector와 ArrayList의 관계와 같아서 
+Hashtable보다 새로운 버전인 HashMap을 사용할 것을 권한다.  
+
+HashMap은 Map을 구현했으므로 **키와 값을 묶어서 하나의 데이터(entry)로 저장한다**는 특징을 갖는다. 
+**그리고 해싱을 사용하기 때문에 많은 양의 데이터를 검색하는데 있어서 뛰어난 성능을 보인다.**   
+
+HashMap은 키와 값을 각각 Object타입으로 저장한다. 
+즉 (Object, Object)의 형태로 저장하기 때문에 어떠한 객체도 저장할 수 있지만 키는 주로 String을 대문자 또는 소문자로 통일해서 사용하곤 한다.  
+- 키(key): 컬렉션 내의 키 중에서 유일해야 한다.
+- 값(value): 키와 달리 데이터의 중복을 허용한다.  
+
+<br>
+
+HashMap의 생성자와 메서드는 다음과 같다.  
+- HashMap(): HashMap 객체를 생성한다.
+- HashMap(int initialCapacity): 지정된 값을 초기용량으로 하는 HashMap 객체를 생성한다.
+- HashMap(int initialCapacity, float loadFactor): 지정된 초기용량과 load factor의 HashMap 객체를 생성한다.  
+- HashMap(Map m): 지정된 map의 모든 요소를 포함하는 HashMap을 생성한다.
+- void clear(): HashMap에 저장된 모든 객체를 제거한다.
+- Object clone(): 현재 HashMap을 복제해서 반환한다.
+- boolean containsKey(Object key): HashMap에 지정된 키가 포함되어있는지 알려준다. 
+- boolean containsValue(Object value): HashMap에 지정된 값이 포함되어있는지 알려준다.  
+- Set entrySet(): HashMap에 저장된 키와 값을 엔트리(키와 값의 결합) 형태로 Set에 저장해서 반환한다.  
+- Object get(Object key): 지정된 키의 값을 반환한다. 못 찾으면 null 반환
+- Object getOrDefault(Object key, Object defaultValue): 지정된 키의 값을 반환한다. 키를 못찾으면, 기본값으로 지정된 객체를 반환한다.  
+- boolean isEmpty(): HashMap이 비어있는지 알려준다.
+- Set keySet(): HashMap에 저장된 모든 키가 저장된 Set을 반환한다.
+- Object put(Object key, Object value): 지정된 키와 값을 HashMap에 저장한다.
+- void putAll(Map m): Map에 저장된 모든 요소를 HashMap에 저장한다.
+- Object remove(Object key): HashMap에서 지정된 키로 저장된 값을 제거한다.
+- Object replace(Object key, Object value): 지정된 키의 값을 지정된 객체로 대체한다.
+- boolean replace(Object key, Object oldValue, Object newValue): 지정된 키와 객체가 모두 일치하는 경우에만 새로운 객체로 대체한다.
+- int size(): HashMap에 저장된 요소의 개수를 반환한다
+- Collection values(): HashMap에 저장된 모든 값을 컬렉션의 형태로 반환한다.  
+
+<br>
+
+**Hashtable은 키나 값으로 null을 허용하지 않지만, HashMap은 허용한다.**  
+그래서 'map.put(null,null)'이나 'map.get(null)'과 같이 할 수 있다.  
+
+HashMap은 데이터를 키와 값을 모두 Object 타입으로 저장하기 때문에 HashMap의 값으로 HashMap을 다시 저장할 수 있다. 
+이렇게 함으로써 하나의 키에 다시 복수의 데이터를 저장할 수 있다.  
+
+HashMap과 같이 **해싱을 구현한 컬렉션 클래스들은 저장순서를 유지하지 않는다.**    
+
+<br>
+
+#### 해싱과 해시함수  
+해싱이란 `해시함수를 이용해서 데이터를 해시테이블에 저장하고 검색하는 기법`이다.  
+해시함수는 데이터가 저장되어 있는 곳을 알려 주기 때문에 다량의 데이터 중에서도 원하는 데이터를 빠르게 찾을 수 있다.  
+해싱을 구현한 컬렉션 클래스로는 HashSet, HashMap, Hashtable 등이 있다.  
+Hashtable은 컬렉션 프레임웍이 도입되면서 HashMap으로 대체되었으나 이전 소스와의 호환성 문제로 남겨 두고 있다.   
+
+해싱에서 사용하는 자료구조는 **배열과 링크드리스트의 조합**으로 되어있다.  
+저장할 데이터의 키를 해시함수에 넣으면 배열의 한 요소를 얻게 되고, 다시 그 곳에 연결되어 있는 링크드리스트에 저장하게 된다.  
+해싱 과정은 다음과 같다.  
+1. 검색하고자 하는 값의 키로 해시함수를 호출한다.
+2. 해시함수의 계산결과(해시코드)로 해당 값이 저장되어 있는 링크드 리스트를 찾는다.
+3. 링크드리스트에서 검색한 키와 일치하는 데이터를 찾는다.  
+
+빠른 검색 결과를 얻기 위해서는 하나의 링크드 리스트에 최소한의 데이터만 자정되도록 저장될 데이터의 크기를 고려해서
+HashMap의 크기를 적절하게 지정해주어야 하고, 해시함수가 서로 다른 키에 대해서 중복된 해시코드의 반환을 최소화해야 한다.  
+
+실제로는 HashMap과 같이 해싱을 구현한 클래스에서는 Object 클래스에 정의된 hashCode()를 해시함수로 사용한다. 
+Object 클래스에 정의된 hashCode()는 객체의 주소를 이용하는 알고리즘으로 해시코드를 만들어 내기 때문에 모든 객체에 대해 hashCode()를 호출한 결과가 서로 유일한 훌륭한 방법이다.  
+String 클래스의 경우 Object로부터 상속받은 hashCode()를 오버라이딩해서 문자열의 내용으로 해시코드를 만들어 낸다. 
+그래서 서로 다른 String 인스턴스일지라도 같은 내용의 문자열을 가졌다면 hashCode()를 호출하면 같은 해시코드를 얻는다.  
+
+HashSet에서 이미 설명했던 것과 같이 서로 다른 두 객체에 대해 equals()로 비교한 결과가 true인 동시에 hashCode()의 반환값이 같아야 같은 객체로 인식한다. 
+HashMap에서도 같은 방법으로 객체를 구별하며, **이미 존재하는 키에 대한 값을 저장하면 기존의 값을 새로운 값으로 덮어쓴다.**   
+
+그래서 새로운 클래스를 정의할 때 equals()를 재정의 오버라이딩해야 한다면 hashCode()도 같이 재정의해서 equals()의 결과가 true인 두 객체의 hashCode() 결과값이 항상 같도록 해줘야 한다. 
+그렇지 않으면 HashMap과 같이 해싱을 구현한 컬렉션 클래스에서는 equals()의 호출 결과가 true이지만 해시코드가 다른 두 객체를 서로 다른 것으로 인식하고 따로 저장할 것이다.
+(equals()로 비교한 결과가 false이고 해시코드가 같은 경우에도 같은 링크드 리스트(서랍)에 저장된 서로 다른 두 데이터가 된다.)  
 
 <br><br>
 
