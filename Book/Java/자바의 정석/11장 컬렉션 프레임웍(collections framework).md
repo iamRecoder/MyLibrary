@@ -806,7 +806,181 @@ HashMap에서도 같은 방법으로 객체를 구별하며, **이미 존재하�
 
 <br><br>
 
+### TreeMap  
+TreeMap은 `이진검색트리의 형태로 키와 값의 쌍을 이루어진 데이터를 저장`한다. 
+그래서 **검색과 정렬**에 적합한 클래스이다.  
+검색에 관한 대부분의 경우에서 HashMap이 TreeMap보다 더 뛰어나므로 HashMap을 사용하는 것이 좋다. 
+다만 범위검색이나 정렬이 필요한 경우에는 TreeMap을 사용하자.  
 
+TreeMap의 생성자와 메서드는 다음과 같다.  
+- TreeMap(): TreeMap 객체를 생성  
+- TreeMap(Comparator c): 지정된 Comprator를 기준으로 정렬하는 TreeMap 객체를 생성
+- TreeMap(Map m): 주어진 Map에 지정된 모든 요소를 포함하는 TreeMap을 생성
+- TreeMap(SortedMap m): 주어진 SortedMap에 저장된 모든 요소를 포함하는 TreeMap을 생성
+- Map.Entry ceilingEntry(Object key): 지정된 key와 일치하거나 큰 것 중 제일 작은 것의 키와 값의 쌍(Map.Entry)를 반환한다. 없으면 null 반환
+- Object ceilingKey(Object key): 지정된 key와 일치하거나 큰 것 중 제일 작은 것의 키와 값의 쌍(Map.Entry)를 반환. 없으면 null 반환.
+- void clear(): TreeMap에 저장된 모든 객체를 제거
+- Object clone(): 현재 TreeMap을 복제해서 반환
+- Comparator comparator(): TreeMap의 정렬기준이 되는 Comparator를 반환. Comparator가 지정되지 않았다면 null을 반환
+- boolean containsKey(Object key): TreeMap에 지정된 키가 포함되어있는지 알려줌. (포함되어 있으면 true)  
+- boolean containsValue(Object value): TreeMap에 지정된 값이 포함되어있는지 알려줌. 
+- NavigableSet descendingKeySet(): TreeMap에 저장된 키를 역순으로 정렬해서 NavigableSet에 담아서 반환
+- Set entrySet(): TreeMap에 저장된 키와 값을 엔트리(키와 값의 결합)의 형태로 Set에 저장해서 반환
+- Map.Entry firstEntry(): TreeMap에 저장된 첫번째(가장 작은) 키와 값의 쌍을 반환
+- Object firstKey(): TreeMap에 저장된 첫번째(가장 작은) 키를 반환
+- Map.Entry floorEntry(Object key): 지정된 key와 일치하거나 작은 것 중에서 가장 큰 키의 쌍(Map.Entry)을 반환. 없으면 null을 반환
+- Object floorKey(Object key): 지정된 key와 일치하거나 작은 것 중에서 제일 큰 키를 반환. 없으면 null을 반환
+- Object get(Object key): 지정된 키의 값(객체)을 반환
+- SortedMap headMap(Object toKey): TreeMap에 저장된 첫번째 요소부터 지정된 범위에 속한 모든 요소가 담긴 SortedMap을 반환(toKey는 미포함)  
+- NavigableMap headMap(Object toKey, boolean inclusive): TreeMap에 저장된 첫번째 요소부터 지정된 범위에 속한 모든 요소가 담긴 SortedMap을 반환. inclusive의 값이 true이면 toKey도 포함  
+- Map.Entry higherKey(Object key): 지정된 key보다 큰 키 중에서 제일 작은 키의 쌍(Map.Entry)을 반환. 없으면 null을 반환
+- boolean isEmpty(): TreeMap이 비어있는지 알려준다.  
+- Set keySet(): TreeMap에 저장된 모든 키가 저장된 Set을 반환
+- Map.Entry lastEntry(): TreeMap에 저장된 마지막 키(가장 큰 키)의 쌍을 반환
+- Object lastKey(): TreeMap에 저장된 마지막 키(가장 큰 키)를 반환
+- Map.Entry lowerEntry(Object key): 지정된 key보다 작은 키 중에서 제일 큰 키의 쌍(Map.Entry)을 반환. 없으면 null을 반환
+- Object lowerKey(Object key): 지정된 key보다 작은 키 중에서 제일 큰 키를 반환. 없으면 null을 반환
+- NavigableSet navigableKeySet(): TreeMap의 모든 키가 담긴 NavigableSet을 반환
+- Map.Entry pollFirstEntry(): TreeMap에서 제일 작은 키를 제거하면서 반환
+- Map.Entry pollLastEntry(): TreeMap에서 제일 큰 키를 제거하면서 반환
+- Object put(Object key, Object value): 지정된 키와 값을 TreeMap에 저장
+- void putAll(Map map): Map에 저장된 모든 요소를 TreeMap에 저장
+- Object remove(Object key): TreeMap에서 지정된 키로 저장된 값을 제거
+- Object replace(Object k, Object v): 기존의 키(k)의 값을 지정된 값(v)으로 변경
+- boolean replace(OBject key, Object oldValue, Object newValue): 기존의 키(k)의 값을 새로운 값(newValue)으로 변경. 단, 기존의 값과 지정된 값(oldValue)가 일치해야 한다.
+- int size(): TreeMap에 저장된 요소의 개수를 반환
+- NavigableMap subMap(Object from key, boolean fromInclusive, Object toKey, boolean toInclusive): 지정된 두개의 키 사이에 있는 모든 요소들이 담긴 NavigableMap을 반환. fromInclusive가 true이면 범위에 SortedMap을 반환(toKey를 포함하지 않는다)  
+- SortedMap subMap(Object fromKey, Object toKey): 지정된 두 개의 키 사이에 있는 모든 요소들이 담긴 SortedMap을 반환(toKey는 포함하지 않는다)  
+- SortedMap tailMap(Object fromKey): 지정된 키부터 마지막 요소의 범위에 속한 요소가 담긴 SortedMap을 반환
+- NavigableMap tailMap(Object fromKey, boolean inclusive): 지정된 키부터 마지막 요소의 범위에 속한 요소가 담긴 NavigableMap을 반환. inclusive가 true이면 fromKey를 포함
+- Collection values(): TreeMap에 저장된 모든 값을 컬렉션 형태로 반환
 
+<br><br>
 
+### Properties  
+Properties는 HashMap의 구버전인 Hashtable을 상속받아 구현한 것으로, Hashtable은 키와 값을 (Object, Object)의 형태로 저장하는데 비해 Properties는 (String, String)의 형태로 저장하는 보다 단순화된 컬렉션클래스이다.  
 
+주로 애플리케이션의 환경설정과 관련된 속송을 저장하는데 사용되며 데이터를 파일로부터 읽고 쓰는 편리한 기능을 제공한다. 
+그래서 간단한 입출력은 Properties를 활용하면 몇 줄의 코드로 쉽게 해결될 수 있다.  
+
+Properties의 생성자와 메서드는 다음과 같다.  
+- Properties(): Properties 객체를 생성한다.
+- Properties(Properties defaults): 지정된 Properties에 저장된 목록을 가진 Properties 객체를 생성한다.
+- String getProperty(String key): 지정된 키와 값을 반환한다.
+- String getProperty(String key, String defaultValue): 지정된 키와 값을 반환한다. 키를 못찾으면 defaultValue를 반환한다.  
+- void list(PrintStream out): 지정된 PrintStream에 저장된 목록을 출력한다.
+- void list(PrintWriter out): 지정된 PrintWriter에 저장된 목록을 출력한다. 
+- void load(InputStream inStream): 지정된 InputStream으로부터 목록을 읽어서 저장한다.
+- void load(Reader reader): 지정된 Reader로부터 목록을 읽어서 저장한다.
+- void loadFromXML(InputStream in): 지정된 InputStream으로부터 XML 문서를 읽어서, XML 문서에 저장된 목록을 읽어다 담는다. (load & store)  
+- Enumeration propertyNames(): 목록의 모든 키가 담긴 Enumeration을 반환한다.
+- void save(OutputStream out, String header): deprecated 되었으므로 store()를 사용하자.
+- Object setProperty(String key, String value): 지정된 키와 값을 저장한다. 이미 존재하는 키이면 새로운 값으로 바뀐다. 단순히 Hashtable의 put 메서드를 호출한다.
+- void store(OutputStream out, String comments): 저장된 목록을 지정된 OutputStream에 출력(저장)한다. comments는 목록에 대한 주석으로 저장된다.
+- void store(Writer writer, String comments): 저장된 목록을 지정된 Writer에 출력(저장)한다. comments는 목록에 대한 설명(주석)으로 저장된다.
+- void storeToXML(OutputStream os, String comment): 저장된 목록을 지정된 출력스트림에 XML 문서로 출력(저장)한다. comment는 목록에 대한 설명(주석)으로 저장된다.  
+- void storeToXML(OutputStream os, String comment, String encoding): 저장된 목록을 지정된 출력스트림에 해당 인코딩의 XML 문서로 출력(저장)한다. comment는 목록에 대한 설명(주석)으로 저장된다.  
+- Set stringPropertyNames(): Properties에 저장되어 있는 모든 키를 Set에 담아서 반환한다.
+
+Properties는 Hashtable을 상속받아 구현한 것이라 Map의 특성상 저장순서를 유지하지 않는다.  
+Properties는 커렉션 프레임웍 이전의 구버전이므로 Iterator가 아닌 Enumeration을 사용한다.  
+
+<br><br>
+
+### Collections  
+Arrays가 배열과 관련된 메서드를 제공하는 것처럼, Collections는 컬렉션과 관련된 메서드를 제공한다.  
+java.util.Collection은 인터페이스이고 java.util.Collections는 클래스이다.  
+
+<br>
+
+#### 컬렉셔의 동기화  
+멀티쓰레드 프로그래밍에서는 하나의 객체를 여러 쓰레드가 동시에 접근할 수 있기 때문에 데이터의 일관성을 유지하기 위해서는 공유되는 객체에 동기화가 필요하다.  
+Vecor, Hashtable과 같은 구버전(JDK1.2 이전)의 클래스들은 자체적으로 동기화 처리가 되어 있는데, 멀티쓰레드 프로그래밍이 아닌 경우에는 불필요한 기능이 되어 성능을 떨어뜨리는 요인이 된다.  
+
+그래서 추가된 ArrayList와 HashMap과 같은 컬렉션은 동기화를 자체적으로 처리하지 않고 필요한 경우에만 java.util.Collections 클래스의 동기화 메서드를 이용해서 동기화가 가능하도록 변경하였다.  
+Collections 클래스는 다음과 같은 동기화 메서드를 제공하고 있으므로, 동기화가 필요할 때 해당하는 것을 사용하면 된다.  
+- static Collection synchronizedCollection(Collection c)
+- static List synchronizedList(List list)
+- static Set synchronizedSet(Set s)
+- static Map synchronizedMap(Map m)
+- static SortedSet synchronizedSortedSet(SortedSet s)
+- static SortedMap synchronizedSortedMap(SortedMap m)
+
+이들을 사용하는 방법은 다음과 같다.  
+```java
+List syncList = Collections.synchronizedList(new ArrayList(...));
+```
+
+<br>
+
+#### 변경불가 컬렉션 만들기  
+컬렉션에 저장된 데이터를 보호하기 위해서 컬렉션을 변경할 수 없게, 즉 읽기전용으로 만들어야할 때가 있다. 
+주로 멀티 쓰레드 프로그래밍에서 여러 쓰레드가 하나의 컬렉션을 공유하다보면 데이터가 손상될 수 있는데, 이를 방지하려면 아래의 메서드들을 이용하자.  
+- static Collection unmodifiableCollection(Collection c)
+- static List unmodifiableList(List list)
+- static Set unmodifiableSet(Set s)
+- static Map unmodifiableMap(Map m)
+- static Navigable unmodifiableNavigableSet(NavigableSet s)
+- static SortedSet unmodifiableSortedSet(SortedSet s)
+- static Navigable unmodifiableNavigableMap(NavigableMap m)
+- static SortedMap unmodifiableSortedMap(SortedMap m)
+
+<br>
+
+#### 싱글톤 컬렉션 만들기  
+단 하나의 객체만을 저장하는 컬렉션을 만들고 싶은 경우가 있다. 이럴 때는 아래의 메서드를 사용하면 된다.  
+- static List singletonList(Object o)
+- static set singleton(Object o)    // singletonSet이 아님에 주의하자!
+- static Map singletonMap(Object key, Object value)
+
+매개변수로 저장할 요소를 지저하면, 해당 요소를 저장하는 컬렉션을 반환한다. 그리고 반환된 컬렉션은 변경할 수 없다.  
+
+<br>
+
+#### 한 종류의 객체만 저장하는 컬렉션 만들기  
+컬렉션에 모든 종류의 객체를 저장할 수 있다는 것은 장점이기도 하고 단점이기도 하다.  
+대부분의 경우 한 종류의 객체를 저자하며, 컬렉션에 지정된 종츄의 객체만 저장할 수 있도록 제한하고 싶을 때 아래 메서드를 사용한다.  
+- static Collection checkedCollection(Collection c, Class type)
+- static List checkedList(List list, Class type)
+- static Set checkedSet(Set s, Class type)
+- static Map checkedMap(Map m, Class keyType, Class valueType)
+- static Queue checkedQueue(Queue queue, Class type)
+- static Navigable checkedNavigableSet(NavigableSet s, Class type)
+- static SortedSet checkedSortedSet(SortedSet s, Class type)
+- static Navigable checkedNavigableMap(NavigableMap m, Class keyType, Class valueType)
+- static SortedMap checkedSortedMap(SortedMap m, Class keyType, Class valueType)
+
+사용법은 다음과 같이 두 번쨰 매개변수에 장할 객체의 클래스를 지정하면 된다.  
+```java
+List list = new ArrayList();
+List checkedList = checkedList(list, String.class); // String만 저장 가능
+checkedList.add("abc");             // OK.
+checkedList.add(new Integer(3));    // 에러. ClassCastException 발생
+```
+
+<br>
+
+컬렉션에 저장할 요소의 타입을 제한하는 것은 다음 장에서 배울 지네릭스(generics)로 간단히 처리할 수 있는데도 이런 메서드들을 제공하는 이유는 호환성 때문이다.  
+지네릭스는 JDK 1.5부터 도입된 기능이기 때문이 그 이전에 작성된 코드를 사용할 때는 이 메서드들이 필요할 수 있다.  
+
+<br>
+<br>
+
+## 컬렉션 정리 & 요약  
+컬렉션 클래스간의 관계는 다음과 같다.  
+![image](https://user-images.githubusercontent.com/54930365/218992127-50163ad1-b4d0-4d28-825f-a131ed734f59.png)
+사진 출처: https://velog.io/@oyeon/11-5256-Collections-%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%BB%AC%EB%A0%89%EC%85%98-%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%A0%95%EB%A6%AC-%EC%9A%94%EC%95%BD  
+
+<br>
+
+컬렉션 클래스의 특징은 다음과 같다.  
+- **ArrayList**: 배열 기반. 데이터의 추가와 삭제에 불리. 순차적인 추가삭제는 제일 빠름. 임의의 요소에 대한 접근성이 뛰어남.
+- **LinkedList**: 연결 기반. 데이터의 추가와 삭제에 유리. 임의의 요소에 대한 접근성이 좋지 않다.  
+- **HashMap**: 배열과 연결이 결합된 형태. 추가, 삭제, 검색, 접근성이 모두 뛰어남. 검색에는 최고 성능을 보인다.
+- **TreeMap**: 연결 기반. 정렬과 검색(특히 범위검색)에 적합. 검색성능은 HashMap보다 떨어진다.  
+- **Stack**: Vector를 상속받아 구현.
+- **Queue**: LinkedList가 Queue 인터페이스를 구현
+- **Properties**: Hashtable을 상속받아 구현
+- **HashSet**: HashMap을 이용해서 구현
+- **TreeSet**: TreeMap을 이용해서 구현
+- **LinkedHashMap & LinkedHashSet**: HashMap과 HashSet에 저장순서유지 기능을 추가
