@@ -252,6 +252,7 @@ System.out.println(s.equals(s2));   // true
 - String toString(): StringBuffer 인스턴스의 문자열을 String으로 반환한다.
 - String substring(int start): 지정된 범위 내의 문자열을 String으로 뽑아서 반환한다.
 - String substring(int start, int end): 지정된 범위 내의 문자열을 String으로 뽑아서 반환한다.  
+
 <br>
 
 ### StringBuilder
@@ -634,7 +635,9 @@ final int[] mag;    // 값(magnitude)
   - BigInteger val = new BigInteger("12323523343435242");    // 문자열로 생성
   - BigInteger val = new BigInteger("FFFF", 16);            // 지정된 진법(radix)의 문자열로 변환
   - BigInteger val = new BigInteger.valueOf(1234567890L);   // 숫자로 생성
-<br>
+
+  <br>
+  
 - 다른 타입으로의 변환  
   - String toString(): 문자열로 변환
   - String toString(int radix): 지정된 진법(radix)의 문자열로 변환

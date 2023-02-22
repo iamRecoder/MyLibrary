@@ -91,7 +91,7 @@ T[] tmpArr new T[3];    // 에러. 지네릭 배열 생성불가
 
 <br><br>
 
-### 지네릭 클래스의 객체 상성과 사용  
+### 지네릭 클래스의 객체 생성과 사용  
 지네릭 클래스의 객체를 생성할 때는 참조변수와 생성자에 대입된 타입(매개변수화된 타입)이 일치해야 한다. 
 일치하지 않으면 에러가 발생한다.  
 두 타입이 상속관계에 있어도 마찬가지이다.  
@@ -124,4 +124,48 @@ appleBox.add(new Grape());  // 에러. Box<Apple>에는 Apple 객체만 추가 �
 appleBox.add(new GreenApple()); // OK. 다형성. GreenApple은 Apple의 자손이다. 
 ```
 
+<br><br>
 
+### 제한된 지네릭 클래스  
+지네릭 타입에 `extends`를 사용하면, 특정 타입의 자손들만 대입할 수 있게 제한할 수 있다.  
+```java
+class FruitBox<T extends Fruit> {
+    ...
+}
+```
+
+<br>
+
+만일 클래스가 아니라 인터페이스를 구현해야 한다는 제약이 필요하다면, 이때도 `extends`를 사용한다. 
+`implements`를 사용하지 않는다는 점에 주의하자.  
+
+클래스 Fruit의 자손이면서 Eatable 인터페이스도 구현해야한다면 아래와 같이 `&` 기호로 연결한다.  
+이제 FruitBox에는 Fruit의 자손이면서 Eatable을 구현한 클래스만 타입 매개변수 T에 대입될 수 있다.  
+```java
+class FruitBox<T extends Fruit & Eatable> {
+    ...
+}
+```
+
+<br>
+<br>
+
+### 와일드 카드  
+지네릭 클래스라 하더라도 static 메서드에는 타입 매개변수 T를 매개변수에 사용할 수 없으므로 특정 타입을 T 대신 지정해줘야 한다.  
+이렇게 지네릭 타입 대신 특정 타입으로 매개변수를 지정할 경우, 다른 타입의 객체는 static 메서드의 매개변수가 될 수 없다.  
+```java
+static Juice makeJuice(FruitBox<T> box){ ... }          // static 메서드에는 타입 매개변수 T를 매개변수에 사용할 수 없다.  
+static Juice makeJuice(FruitBox<Fruit> box){ ... }      // 따라서, static 메서드에 지네릭스를 사용할 경우, 타입 매개변수 T 대신 특정 타입을 지정해줘야 한다.
+```
+
+<br>
+
+```java
+static Juice makeJuice(FruitBox<Fruit> box){ ... }
+static Juice makeJuice(FruitBox<Apple> box){ ... }
+```
+그러나 위의 예시처럼 지네릭 타입이 다르게 오버로딩하면, 컴파일 에러가 발생한다. **지네릭 타입이 다른 것만으로는 오버로딩이 성립하지 않기 때문이다.**  
+지네릭 타입은 컴파일러가 컴파일할 때만 사용하고 제거해버린다. 그래서 위의 두 메서드는 오버로딩이 아니라 `메서드 중복 정의`이다.  
+
+이럴 때 사용하기 위해 고안된 것이 바로 `와일드 카드`이다.  
+와일드카드는 기호 '?'로 표현하는데, 와일드 카드는 어떠한 타입도 될 수 있다.  
