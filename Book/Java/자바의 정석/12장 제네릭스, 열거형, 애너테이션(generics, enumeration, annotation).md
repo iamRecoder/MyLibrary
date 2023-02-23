@@ -248,6 +248,252 @@ public static <T extends Product> void printAll(ArrayList<T> list, ArrayList<T> 
 
 <br><br>
 
+### 지네릭 타입의 형변환  
+지네릭 타입과 넌지네릭(non-generic) 타입간의 형변환은 항상 가능하다.  
+하지만 대입된 타입과 다른 지네릭 타입간의 형변환은 불가능하다.  
+```java
+Box box = null;
+Box<Object> objBox = null;
+box = (Box)objBox;              // OK. 지네릭 타입 -> 원시 타입. 경고 발생
+objBox = (Box<Object>)box;     // OK. 원시 타입 -> 지네릭 타입. 경고 발생
+
+Box<Object> objBox = null;
+Box<String> strBox = null;
+objBox = (Box<Object>)strBox;   // 에러. Box<String> -> Box<Object>
+strBox = (Box<String>)objBox;   // 에러. Box<Object> -> Box<String>
+
+Box<? extends Object> wBox = new Box<String>();     // OK. 형변환 가능. 매개변수에 다형성이 적용되었다.
+```
+
+<br><br>
+
+### 지네릭 타입의 제거 
+컴파일러는 지네릭 타입을 이용해서 소스파일을 체크하고, 필요한 곳에 형변환을 넣어준다. 
+그리고 지네릭 타입을 제거한다 
+즉, 컴파일된 파일(*.class)에는 지네릭 타입에 대한 정보가 없는 것이다.  
+
+이렇게 하는 주된 이유는 지네릭이 도입되기 이전의 소스 코드와의 호환성을 유지하기 위해서이다.  
+JDK1.5부터 지네릭스가 도입되었지만, 아직도 원시 타입을 사용해서 코드를 작성하는 것을 허용한다. 
+그러나 앞으로 가능하면 원시 타입을 사용하지 않도록 하자.  
+
+지네릭 타입의 제거 과정은 꽤 복잡하다. 
+기본적인 제거과정에 대해서만 살표볼 것이다.  
+> 1. 지네릭 타입의 경계(bound)를 제거한다.
+>    - 지네릭 타입이 <T extends Fruit>라면 T는 Fruit로 치환된다. \<T>인 경우는 T는 Object로 치환된다. 그리고 클래스 옆의 선언은 제거된다.
+>      ```java
+>      // before
+>      class Box<T extends Fruit> {
+>       void add(T t) { ... }
+>      }
+>      ```
+>      ```java
+>      // after
+>      class Box {
+>       void add(Fruit t) { ... }
+>      }
+>      ```
+> 2. 지네릭 타입을 제거한 후에 타입이 일치하지 않으면, 형변환을 추가한다.
+>   - List의 get()은 Object 타입을 반환하므로 형변환이 필요하다.
+>   - 와일드 카드가 포함되어 있는 경우에는 적절한 타입으로 형변환이 추가된다.
+>     ```java
+>     // before
+>     T get(int i) {
+>       return list.get(i);
+>     }
+>     ```
+>     ```java
+>     // after
+>     Fruit get(int i) {
+>       return (Fruit)list.get(i);
+>     }
+>     ```
+
+<br><br>
+
+## 열거형(enums)  
+열거형은 서로 관련된 상수를 편리하게 선언하기 위한 것으로 여러 상수를 정의할 때 사용하면 유용하다.  
+원래 자바에는 열거형이 존재하지 않았으나 JDK1.5부터 새로 추가되었다.  
+자바의 열거형은 열거형이 갖는 값뿐만 아니라 타입도 관리하기 때문에 보다 논리적인 오류를 줄일 수 있다.  
+```java
+class Card {
+    enum Kind { CLOVER, HEART, DIAMOND, SPADE }
+    enum Value { TWO, THREE, FOUR }
+    
+    final Kind kind;    // 타입이 int가 아닌 Kind임에 유의하자.
+    final Value value;
+}
+```
+
+기존의 많은 언어들, 예를 들어 C언어에서는 타입이 달라도 값이 같으면 조건식 결과가 참이었으나, 
+자바의 열거형은 `타입에 안전한 열거형`이라서 실제 값이 같아도 타입이 다르면 컴파일 에러가 발생한다. 
+이처럼 값뿐만 아니라 타입까지 체크하기 때문에 타입에 안전하다고 하는 것이다.  
+```java
+if (Card.Kind.CLOVER == Card.Value.Two)     // 컴파일 에러. 값은 같지만 타입이 다르다.
+```
+
+<br>
+
+그리고 더 중요한 것은 상수의 값이 바뀌면, 해당 상수를 참조하는 모든 소스를 다시 컴파일해야 한다는 것이다.  
+하지만 열거형 상수를 사용하면, 기존의 소스를 다시 컴파일하지 않아도 된다.  
+
+<br><br>
+
+### 열거형의 정의와 사용  
+`enum 열거형이름 { 상수명1, 상수명2, ... }`  
+
+열거형에 정의된 상수를 사용하는 방법은 '열거형이름.상수명'이다. 클래스의 static 변수를 참조하는 것과 동일하다.  
+
+열거형 상수간의 비교에는 '=='를 사용할 수 있다. 
+equals가 아닌 '=='로 비교가 가능한 만큼 빠른 성능을 제공한다.  
+그러나 '<','>'와 같은 비교연산자는 사용할 수 없고 compareTo()는 사용가능하다.  
+```java
+if(dir == Direction.EAST){  
+        ...
+} else if(dir > Direction.WEST){    // 에러. 열거형 상수에 비교연산자 사용불가
+        ...
+} else if(dir.compareTo(Direction.WEST) > 0){   // compareTo()는 가능
+        ...
+}
+```
+
+<br>
+
+switch문의 조건식에도 열거형을 사용할 수 있다.  
+이 때 주의할 점은 case 문에 열거형의 이름은 적지 않고 상수의 이름만 적어야 한다는 제약이 있다. 
+아마도 그렇게 하는 것이 오타도 줄일 수 있고 보기에 간결하기 때문이다.  
+```java
+switch(dir){
+    case EAST: 
+        break;
+    case WEST:
+        break;
+}
+```
+
+<br>
+
+#### 모든 열거형의 조상 - java.lang.Enum  
+열거형 Direction에 저의된 모든 상수를 출력하려면, 다음과 같이 한다.  
+```java
+Direction[] dArr = Direction.values();
+for(Direction d : dArr){
+    System.out.println(d.name() + d.ordinal());
+}
+```
+values()는 열거형의 모든 상수를 배열에 담아 반환한다. 
+이 메서드는 모든 열거형이 가지고 있는 것으로 컴파일러가 자동으로 추가해 준다. 
+그리고 ordinal()은 모든 열거형의 조상인 java.lang.Enum 클래스에 정의된 것으로, 열거형 상수가 정의된 순서(0부터 시작)를 정수로 반환한다.  
+
+Enum 클래스에는 그 밖에도 다음과 같은 메서드가 정의되어 있다.  
+- Class<E> getDeclaringClass(): 열거형 Class객체를 반환한다.
+- String name(): 열거형 상수의 이름을 문자열로 반환한다.
+- int ordinal(): 열거형 상수가 정의된 순서를 반환한다. (0부터 시작)
+- T valueOf(Class<T> enumType, String name): 지정된 열거형에서 name과 일치하는 열거형 상수를 반환한다.  
+
+<br>
+
+values() 이외에도 컴파일러가 자동적으로 추가해주는 메서드가 하나 더 있다.  
+```java
+static E values()
+static E valueOf(String name)
+```
+valueOf(String name) 메서드는 열거형 상수의 이름으로 문자열 상수에 대한 참조를 얻을 수 있게 해준다.  
+```java
+Direction d = Direction.valueOf("WEST");
+System.out.println(d);      // WEST
+```
+
+<br><br>
+
+### 열거형에 멤버 추가하기  
+Enum 클래스에 정의된 ordinal()이 열거형 상수가 정의된 순서를 반환하지만, 이 값을 열거형 상수의 값으로 사용하지 않는 것이 좋다. 
+이 값은 내부적인 용도로만 사용되기 위한 것이기 때문이다.   
+
+열거형 상수의 값이 불연속적인 경우에는 다음과 같이 열거형 상수의 이름 옆에 원하는 값을 괄호()와 함께 적어주면 된다.  
+`enum Direction { EAST(1), SOUTH(5), WEST(-1), NORTH(10) }`  
+
+그리고 지정된 값을 저장할 수 있는 인스턴스 변수와 생성자를 새로 추가해주어야 한다.  
+이 때 주의할 점은, 먼저 열거형 상수를 모두 정의한 다음에 다른 멤버들을 추가해야 한다는 것이다. 
+그리고 열거형 상수의 마지막에도 ';'을 잊지 말아야 한다.  
+```java
+enum Direction {
+    EAST(1), SOUTH(5), WEST(-1), NORTH(10);     // 끝에 ';'을 추가햐야 한다.
+    
+    private final int value;    // 정수를 저장할 필드(인스턴스 변수)를 추가
+    Direction(int value) { this.value = value; }    // 생성자를 추가
+    
+    public int getValue() { return value; }
+}
+```
+
+열거형 인스턴스 변수는 반드시 final이어야 한다는 제약은 없지만, value는 열거형 상수의 값을 저장하기 위한 것이므로 final을 붙였다. 
+그리고 외부에서 값을 얻을 수 있게 getValue()도 추가했다.  
+
+열거형 Direction에 새로운 생성자가 추가되었지만, 위와 같이 열거형의 객체를 생성할 수 없다. 
+열거형의 생성자는 제어자가 묵시적으로 private이기 때문이다.  
+`Directin d = new Direction(1);   // 에러. 열거형의 생성자는 외부에서 호출불가`  
+
+필요하다면 하나의 열거형 상수에 여러 값을 지정할 수도 있다. 
+다만 그에 맞게 인스턴스 변수와 생성자 등을 새로 추가해주어야 한다.  
+
+<br>
+
+#### 열거형에 추상 메서드 추가하기  
+열거형에 추상 메서드를 선언하면 각 열거형 상수가 이 추상 메서드를 반드시 구현해야 한다.   
+아래의 예제에서는 각 열거형 상수가 fare()를 똑같은 내용으로 구현했지만, 다르게 구현될 수도 있게 하려고 추상 메서드로 선언한 것이다.  
+```java
+enum Transportation {
+    BUS(100) {
+        int fare(int distance) { return distance * BASIC_FARE; }
+    },
+    TRAIN(150) {
+        int fare(int distance) { return distance * BASIC_FARE; }
+    },
+    AIRPLANE(300) {
+        int fare(int distance) { return distance * BASIC_FARE; }
+    };
+    
+    abstract int fare(int distance);    // 거리에 따른 요금을 계산하는 추상 메서드
+    
+    protected final int BASIC_FARE;     // protected로 해야 각 상수에서 접근가능
+    
+    Transportation(int basicFare){
+        BASIC_FARE = basicFare;
+    }
+}
+```
+
+<br><br>
+
+### 열거형의 이해  
+열거형의 이해를 돕기 위해 마지막으로 열거형이 내부적으로 어떻게 구현되었는지에 대해 설명하고자 한다.  
+
+만일 열거형 Direction이 다음과 같이 정의되어 있을 때, 
+`enum Direction { EASR, SOUTH, WEST, NORTH }`  
+사실은 열거형 상수 하나하나가 Direction 객체이다.  
+
+위의 문장을 클래스로 정의한다면 다음과 같을 것이다.  
+```java
+class Direction {
+    static final Direction EAST = new Direction("EAST");
+    static final Direction SOUTH = new Direction("SOUTH");
+    static final Direction WEST = new Direction("WEST");
+    static final Direction NORTH = new Direction("NORTH");
+    
+    private String name;
+    
+    private Direction(String name){
+        this.name = name;
+    }
+}
+```
+Direction 클래스의 static 상수 EAST, SOUTH, WEST, NORTH의 값은 객체의 주소이고, 
+이 값은 바뀌지 않는 값이므로 '=='로 비교가 가능한 것이다.  
+
+만약 열거형에 추상 메서드를 새로 추가하면, 클래스 앞에도 'abstract'를 붙여줘야 하고, 
+각 static 상수들도 추상 메서드를 구현해주어야 한다.  
+이제 왜 열거형에 추상 메서드를 추가하면 각 열거형 상수가 추상 메서드를 구현해야하는지 이해가 될 것이다.  
+
 
 
 
