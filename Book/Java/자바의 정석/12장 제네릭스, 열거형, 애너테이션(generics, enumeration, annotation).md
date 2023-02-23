@@ -169,3 +169,85 @@ static Juice makeJuice(FruitBox<Apple> box){ ... }
 
 이럴 때 사용하기 위해 고안된 것이 바로 `와일드 카드`이다.  
 와일드카드는 기호 '?'로 표현하는데, 와일드 카드는 어떠한 타입도 될 수 있다.  
+'?'만으로는 Object 타입과 다를 게 없으므로, 다음과 같이 'extends'와 'super'로 상한과 하한을 제한할 수 있다.  
+```text
+<? extends T> 와일드 카드의 상한 제한. T와 그 자손들만 가능
+<? super T>   와일드 카드의 하한 제한. T와 그 조상들만 가능
+<?>           제한 없음. 모든 타입이 가능. <? extends Object>와 동일
+```
+
+<br>
+
+와일드 카드를 사용해서 makeJuice()의 매개변수 타입을 FruitBox<Fruit>에서 FruitBox<? extends Fruit>으로 바꾸면 
+다음과 같이 된다.  
+```java
+static Juice makeJuice(FruitBox<? extends Fruit> Box){
+        ...
+        }
+```
+
+<br><br>
+
+### 지네릭 메서드  
+메서드의 선언부에 지네릭 타입이 선언된 메서드를 지네릭 메서드라 한다.  
+지네릭 타입의 선언 위치는 반환 타입 바로 앞이다.  
+
+지네릭 클래스에 정의된 타입 매개변수와 지네릭 메서드에 정의된 타입 매개변수는 전혀 별개의 것이다. 
+같은 타입 문자 T를 사용해도 같은 것이 아니라는 것에 주의해야 한다.  
+지네릭 메서드는 지네릭 클래스가 아닌 클래스에도 정의될 수 있다.  
+```java
+class FruitBox<T>{
+    ...
+    static <T> void sort(List<T> list, Comparator<? super T> c){
+        ...
+    }
+}
+```
+위의 코드에서 지네릭 클래스 FruitBox에 선언된 타입 매개변수 T와 지네릭 메서드 sort()에 선언된 타입 매개변수 T는 타입 문자만 같을 뿐 서로 다른 것이다.  
+그리고 sort()가 static 메서드라는 것에 주목하자. 
+앞서 설명한 것처럼, static 멤버에는 타입 매개변수를 사용할 수 없지만, 이처럼 메서드에 지네릭 타입을 선언하고 사용하는 것은 가능하다.  
+
+메서드에 선언된 지네릭 타입은 지역 변수를 선언한 것과 같다고 생각하면 이해하기 쉬운데, 이 타입 매개변수는 메서드 내에서만 지역적으로 사용될 것이므로 메서드가 static이건 아니건 상관이 없다.  
+
+앞서 나왔던 makeJuice()를 지네릭 메서드로 바꾸면 다음과 같다.  
+```java
+// before
+static Juice makeJuice(FruitBox<? extends Fruit> box){
+    String tmp = "";
+    for(Fruit f : box.getList()) tmp += f + " ";
+    return new Juice(tmp);
+}
+```
+```java
+// after
+static <T extends Fruit> Juice makeJuice(FruitBox<T> box){
+    String tmp = "";
+    for(Fruit f : box.getList()) tmp += f + " ";
+    return new Juice(tmp);
+}
+```
+
+이제 이 메서드를 호출할 때는 아래와 같이 타입 변수에 타입을 대입해야 한다.  
+```java
+FruitBox<Fruit> fruitBox = new FruitBox<Fruit>();
+System.out.println(Juicer.<Fruit>makeJuice(fruitBox));
+```
+그러나 대부분의 경우 컴파일러가 타입을 추정할 수 있기 때문에 생략해도 된다.  
+
+지네릭 메서드는 매개변수의 타입이 복잡할 때도 유용하다. 만일 아래와 같은 코드가 있다면 타입을 별도로 선언함으로써 코드를 간략히 할 수 있다.  
+```java
+public static void printAll(ArrayList<? extends Product> list, ArrayList<? extends Product> list2){
+        ...
+}
+```
+```java
+public static <T extends Product> void printAll(ArrayList<T> list, ArrayList<T> list2){
+        ...
+}
+```
+
+<br><br>
+
+
+
+
